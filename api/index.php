@@ -88,6 +88,8 @@ try {
         'message' => $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
+        'trace' => explode("\n", $e->getTraceAsString()),
         'previous' => $prev,
+        'prev_trace' => $e->getPrevious() ? explode("\n", $e->getPrevious()->getTraceAsString()) : null,
     ]);
 }
