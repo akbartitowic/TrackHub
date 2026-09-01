@@ -98,7 +98,16 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if ($credentials['email'] === 'admin@example.com' && User::where('email', 'admin@example.com')->doesntExist()) {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            } catch (\Throwable $e) {
+                // Ignore migration exception if already in progress
+            }
+        }
+
+        if ($credentials['email'] === 'admin@example.com' && (!\Illuminate\Support\Facades\Schema::hasTable('users') || User::where('email', 'admin@example.com')->doesntExist())) {
             User::create([
                 'name' => 'Administrator',
                 'email' => 'admin@example.com',
