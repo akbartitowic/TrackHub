@@ -14,6 +14,7 @@ class SettingKeys
     /** Keys allowed to be written via settings update API. */
     public const UPDATABLE = [
         'app_name',
+        'app_tagline',
         'company_name',
         'mail_host',
         'mail_port',

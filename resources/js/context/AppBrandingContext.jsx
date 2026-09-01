@@ -3,6 +3,8 @@ import { getApiUrl } from '../services/api';
 
 const DEFAULT_LOGO = '/logo.png';
 const DEFAULT_FAVICON = '/favicon.png';
+const DEFAULT_APP_NAME = 'Noohtify';
+const DEFAULT_APP_TAGLINE = 'Software Management';
 
 const AppBrandingContext = createContext(null);
 
@@ -20,6 +22,8 @@ function applyFavicon(url) {
 
 export function AppBrandingProvider({ children }) {
     const [branding, setBranding] = useState({
+        app_name: DEFAULT_APP_NAME,
+        app_tagline: DEFAULT_APP_TAGLINE,
         logo_url: DEFAULT_LOGO,
         favicon_url: DEFAULT_FAVICON,
         has_custom_logo: false,
@@ -35,6 +39,8 @@ export function AppBrandingProvider({ children }) {
             const data = await response.json().catch(() => ({}));
             if (response.ok && data?.data) {
                 const next = {
+                    app_name: data.data.app_name || DEFAULT_APP_NAME,
+                    app_tagline: data.data.app_tagline || DEFAULT_APP_TAGLINE,
                     logo_url: data.data.logo_url || DEFAULT_LOGO,
                     favicon_url: data.data.favicon_url || DEFAULT_FAVICON,
                     has_custom_logo: Boolean(data.data.has_custom_logo),

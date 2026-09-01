@@ -29,9 +29,18 @@ class AppBranding
     public static function appName(): string
     {
         try {
-            return Setting::where('key', 'app_name')->value('value') ?: 'TrackHub';
+            return Setting::where('key', 'app_name')->value('value') ?: 'Noohtify';
         } catch (\Throwable) {
-            return 'TrackHub';
+            return 'Noohtify';
+        }
+    }
+
+    public static function appTagline(): string
+    {
+        try {
+            return Setting::where('key', 'app_tagline')->value('value') ?: 'SOFTWARE MANAGEMENT';
+        } catch (\Throwable) {
+            return 'SOFTWARE MANAGEMENT';
         }
     }
 
@@ -56,6 +65,8 @@ class AppBranding
     public static function toArray(): array
     {
         return [
+            'app_name' => self::appName(),
+            'app_tagline' => self::appTagline(),
             'logo_url' => self::logoUrl(),
             'favicon_url' => self::faviconUrl(),
             'has_custom_logo' => self::logoPath() !== null,

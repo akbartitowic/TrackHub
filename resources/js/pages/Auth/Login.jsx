@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { getDefaultLandingPath } from '../../utils/permissions';
 import { fetchAPI } from '../../services/api';
+import { useAppBranding } from '../../context/AppBrandingContext';
 import AppLogo from '../../components/AppLogo';
 
 const ANNOUNCEMENT_TYPE_META = {
@@ -250,6 +251,7 @@ function LiquidBackdrop({ containerRef }) {
 
 export default function Login() {
     const { login } = useAuth();
+    const { app_name, app_tagline } = useAppBranding();
     const navigate = useNavigate();
     const isLocalDev = import.meta.env.DEV || ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const [credentials, setCredentials] = useState({
@@ -295,10 +297,10 @@ export default function Login() {
                         <div className="size-12 bg-white/15 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
                             <AppLogo alt="Application logo" className="size-8" />
                         </div>
-                        <span className="text-4xl font-black text-white tracking-wide">HubTask</span>
+                        <span className="text-4xl font-black text-white tracking-wide">{app_name || 'Noohtify'}</span>
                     </div>
                     <p className="text-white/75 font-medium text-base max-w-[18rem] leading-relaxed tracking-wide">
-                        Task management connected to your world.
+                        {app_tagline || 'Software Management'}
                     </p>
                 </div>
             </div>
@@ -317,7 +319,7 @@ export default function Login() {
                         <div className="size-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
                             <AppLogo alt="Application logo" className="size-6" />
                         </div>
-                        <span className="text-xl font-black text-white tracking-tight">HubTask</span>
+                        <span className="text-xl font-black text-white tracking-tight">{app_name || 'Noohtify'}</span>
                     </div>
 
                     <div className="w-full rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:p-8">

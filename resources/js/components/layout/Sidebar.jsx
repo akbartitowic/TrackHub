@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
 import { useAuth } from '../../context/AuthContext';
+import { useAppBranding } from '../../context/AppBrandingContext';
 import {
     LayoutDashboard, PlusCircle, KanbanSquare, Users, Shield, BarChart3, Settings, Moon, Sun,
     Activity, Wallet, Tag, Lock, LogOut, User, ClipboardList, FileText, PieChart, ClipboardCheck,
@@ -70,6 +71,7 @@ function visibleSortedItems(items, user) {
 export default function Sidebar({ mobileOpen = false }) {
     const { toggleTheme } = useTheme();
     const { user, logout } = useAuth();
+    const { app_name, app_tagline } = useAppBranding();
     const navigate = useNavigate();
     const menuItems = user?.menu_items || [];
     const [collapsed, setCollapsed] = useState(() => {
@@ -121,8 +123,12 @@ export default function Sidebar({ mobileOpen = false }) {
                     <AppLogo alt="Application logo" className="size-full" />
                 </div>
                 <div className={cn('min-w-0', collapsedLabelClass(collapsed))}>
-                    <h1 className="font-extrabold text-xl leading-tight tracking-tight text-primary dark:text-white truncate">Noohtify</h1>
-                    <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider truncate">Software Management</p>
+                    <h1 className="font-extrabold text-xl leading-tight tracking-tight text-primary dark:text-white truncate">
+                        {app_name || 'Noohtify'}
+                    </h1>
+                    <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider truncate">
+                        {app_tagline || 'Software Management'}
+                    </p>
                 </div>
             </div>
 

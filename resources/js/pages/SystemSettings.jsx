@@ -62,12 +62,43 @@ export default function SystemSettings() {
     const { user } = useAuth();
     const canResetData = hasPermission(user, 'settings.reset');
     const {
+        app_name: initialAppName,
+        app_tagline: initialAppTagline,
         logo_url: logoUrl,
         favicon_url: faviconUrl,
         has_custom_logo: hasCustomLogo,
         has_custom_favicon: hasCustomFavicon,
         refreshBranding,
     } = useAppBranding();
+
+    const [appName, setAppName] = useState(initialAppName || 'Noohtify');
+    const [appTagline, setAppTagline] = useState(initialAppTagline || 'Software Management');
+    const [isSavingBrandingText, setIsSavingBrandingText] = useState(false);
+
+    useEffect(() => {
+        if (initialAppName) setAppName(initialAppName);
+        if (initialAppTagline) setAppTagline(initialAppTagline);
+    }, [initialAppName, initialAppTagline]);
+
+    const handleSaveBrandingText = async (e) => {
+        e.preventDefault();
+        setIsSavingBrandingText(true);
+        try {
+            await fetchAPI('/settings/update', {
+                method: 'POST',
+                body: JSON.stringify({
+                    app_name: appName,
+                    app_tagline: appTagline,
+                }),
+            });
+            await refreshBranding();
+            alert('Nama dan Tagline aplikasi berhasil disimpan.');
+        } catch (err) {
+            alert(`Gagal menyimpan: ${err.message}`);
+        } finally {
+            setIsSavingBrandingText(false);
+        }
+    };
 
     const handleBrandingUpdated = async (data) => {
         if (data) {
@@ -262,25 +293,73 @@ export default function SystemSettings() {
                         </CardTitle>
                         <CardDescription>Logo sidebar/login dan ikon tab browser.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <BrandingAssetUpload
-                            kind="logo"
-                            label="Logo aplikasi"
-                            description="Dipakai di sidebar, halaman login, dan default quotation PDF."
-                            previewUrl={logoUrl}
-                            hasCustom={hasCustomLogo}
-                            onUpdated={handleBrandingUpdated}
-                            onError={(msg) => alert(msg)}
-                        />
-                        <BrandingAssetUpload
-                            kind="favicon"
-                            label="Favicon (tab browser)"
-                            description="Ikon di tab browser. Disarankan PNG persegi, min. 32×32 px."
-                            previewUrl={faviconUrl}
-                            hasCustom={hasCustomFavicon}
-                            onUpdated={handleBrandingUpdated}
-                            onError={(msg) => alert(msg)}
-                        />
+                    <CardContent className="space-y-6">
+                        <form onSubmit={handleSaveBrandingText} className="space-y-4 rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                        Nama Aplikasi
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        value={appName}
+                                        onChange={(e) => setAppName(e.target.value)}
+                                        placeholder="Contoh: Noohtify"
+                                        required
+                                        className="bg-white dark:bg-slate-950"
+                                    />
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        Ditampilkan di header sidebar, halaman login, dan judul aplikasi.
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                        Tagline / Subtitle
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        value={appTagline}
+                                        onChange={(e) => setAppTagline(e.target.value)}
+                                        placeholder="Contoh: SOFTWARE MANAGEMENT"
+                                        className="bg-white dark:bg-slate-950"
+                                    />
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        Teks keterangan kecil di bawah nama aplikasi pada sidebar.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex justify-end pt-1">
+                                <Button type="submit" disabled={isSavingBrandingText} size="sm" className="gap-1.5">
+                                    {isSavingBrandingText ? (
+                                        <Loader2 className="size-3.5 animate-spin" />
+                                    ) : (
+                                        <Save className="size-3.5" />
+                                    )}
+                                    Simpan Nama & Tagline
+                                </Button>
+                            </div>
+                        </form>
+
+                        <div className="border-t border-slate-200/80 pt-4 dark:border-slate-800 space-y-4">
+                            <BrandingAssetUpload
+                                kind="logo"
+                                label="Logo aplikasi"
+                                description="Dipakai di sidebar, halaman login, dan default quotation PDF."
+                                previewUrl={logoUrl}
+                                hasCustom={hasCustomLogo}
+                                onUpdated={handleBrandingUpdated}
+                                onError={(msg) => alert(msg)}
+                            />
+                            <BrandingAssetUpload
+                                kind="favicon"
+                                label="Favicon (tab browser)"
+                                description="Ikon di tab browser. Disarankan PNG persegi, min. 32×32 px."
+                                previewUrl={faviconUrl}
+                                hasCustom={hasCustomFavicon}
+                                onUpdated={handleBrandingUpdated}
+                                onError={(msg) => alert(msg)}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
 
