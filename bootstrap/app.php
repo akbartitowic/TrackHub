@@ -35,40 +35,4 @@ if (!is_writable(dirname(__DIR__).'/storage') || is_dir('/tmp/storage')) {
     $app->useStoragePath('/tmp/storage');
 }
 
-$app->booting(function () {
-    if (!config('database.default')) {
-        config(['database.default' => 'sqlite']);
-    }
-    if (config('database.default') === 'sqlite') {
-        $dbPath = config('database.connections.sqlite.database');
-        if (!$dbPath || !file_exists($dbPath) || (file_exists($dbPath) && filesize($dbPath) === 0)) {
-            $target = (!is_writable(dirname(__DIR__).'/database') || is_file('/tmp/database.sqlite')) ? '/tmp/database.sqlite' : database_path('database.sqlite');
-            $source = database_path('database.sqlite');
-            if ($target !== $source && (!file_exists($target) || filesize($target) === 0) && file_exists($source) && filesize($source) > 0) {
-                @copy($source, $target);
-                @chmod($target, 0666);
-            } elseif (!file_exists($target)) {
-                @touch($target);
-                @chmod($target, 0666);
-            }
-            config(['database.connections.sqlite.database' => $target]);
-        }
-    }
-});
-
-$app->booted(function () {
-    if (config('database.default') === 'sqlite') {
-        try {
-            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
-                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-            }
-            if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::where('email', 'admin@example.com')->doesntExist()) {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            }
-        } catch (\Throwable) {
-            // Ignore during cli or migration
-        }
-    }
-});
-
 return $app;
