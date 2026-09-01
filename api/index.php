@@ -36,16 +36,20 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
         $_SERVER['DB_CONNECTION'] = 'sqlite';
     }
 
-    // Default SQLite database file in /tmp if external DB is not set
-    if (empty($_ENV['DB_DATABASE']) && empty($_SERVER['DB_DATABASE'])) {
-        $dbPath = '/tmp/database.sqlite';
-        if (!file_exists($dbPath)) {
+    // Initialize SQLite database file in /tmp from bundled database if not exists
+    $dbPath = '/tmp/database.sqlite';
+    if (!file_exists($dbPath) || filesize($dbPath) === 0) {
+        $sourceDb = dirname(__DIR__) . '/database/database.sqlite';
+        if (file_exists($sourceDb) && is_readable($sourceDb) && filesize($sourceDb) > 0) {
+            @copy($sourceDb, $dbPath);
+        } else {
             @touch($dbPath);
         }
-        putenv("DB_DATABASE={$dbPath}");
-        $_ENV['DB_DATABASE'] = $dbPath;
-        $_SERVER['DB_DATABASE'] = $dbPath;
+        @chmod($dbPath, 0666);
     }
+    putenv("DB_DATABASE={$dbPath}");
+    $_ENV['DB_DATABASE'] = $dbPath;
+    $_SERVER['DB_DATABASE'] = $dbPath;
 
     // Normalize SCRIPT_NAME and REQUEST_URI so Laravel routes /api/* and web routes correctly
     $_SERVER['SCRIPT_NAME'] = '/index.php';

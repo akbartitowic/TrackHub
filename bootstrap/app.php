@@ -41,12 +41,17 @@ $app->booting(function () {
     }
     if (config('database.default') === 'sqlite') {
         $dbPath = config('database.connections.sqlite.database');
-        if (!$dbPath || !file_exists($dbPath)) {
-            $fallback = (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) ? '/tmp/database.sqlite' : database_path('database.sqlite');
-            if (!file_exists($fallback)) {
-                @touch($fallback);
+        if (!$dbPath || !file_exists($dbPath) || (file_exists($dbPath) && filesize($dbPath) === 0)) {
+            $target = (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) ? '/tmp/database.sqlite' : database_path('database.sqlite');
+            $source = database_path('database.sqlite');
+            if ($target !== $source && (!file_exists($target) || filesize($target) === 0) && file_exists($source) && filesize($source) > 0) {
+                @copy($source, $target);
+                @chmod($target, 0666);
+            } elseif (!file_exists($target)) {
+                @touch($target);
+                @chmod($target, 0666);
             }
-            config(['database.connections.sqlite.database' => $fallback]);
+            config(['database.connections.sqlite.database' => $target]);
         }
     }
 });
