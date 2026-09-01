@@ -3,6 +3,16 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+$dbDefault = env('DB_CONNECTION');
+if (!$dbDefault || trim((string)$dbDefault) === '') {
+    $dbDefault = 'sqlite';
+}
+
+$dbPath = env('DB_DATABASE');
+if (!$dbPath || trim((string)$dbPath) === '') {
+    $dbPath = (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) ? '/tmp/database.sqlite' : database_path('database.sqlite');
+}
+
 return [
 
     /*
@@ -17,7 +27,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION') ?: 'sqlite',
+    'default' => $dbDefault,
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +45,7 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE') ?: ((isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) ? '/tmp/database.sqlite' : database_path('database.sqlite')),
+            'database' => $dbPath,
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             'busy_timeout' => null,
