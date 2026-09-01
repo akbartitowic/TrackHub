@@ -40,7 +40,9 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->create();
 
-$app->register(\Illuminate\View\ViewServiceProvider::class);
+foreach ((new \Illuminate\Support\DefaultProviders)->toArray() as $provider) {
+    $app->register($provider);
+}
 
 if (!is_writable(dirname(__DIR__).'/storage') || is_dir('/tmp/storage')) {
     $app->useStoragePath('/tmp/storage');
