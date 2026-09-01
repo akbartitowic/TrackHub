@@ -37,5 +37,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         MailSettings::apply();
+
+        if ($this->app->environment('production') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
