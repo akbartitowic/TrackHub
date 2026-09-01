@@ -28,7 +28,11 @@ class AppBranding
 
     public static function appName(): string
     {
-        return Setting::where('key', 'app_name')->value('value') ?: 'HubTask';
+        try {
+            return Setting::where('key', 'app_name')->value('value') ?: 'TrackHub';
+        } catch (\Throwable) {
+            return 'TrackHub';
+        }
     }
 
     public static function faviconUrl(): ?string
@@ -78,9 +82,12 @@ class AppBranding
 
     private static function pathFor(string $key): ?string
     {
-        $value = Setting::where('key', $key)->value('value');
-
-        return $value ? (string) $value : null;
+        try {
+            $value = Setting::where('key', $key)->value('value');
+            return $value ? (string) $value : null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     private static function setPath(string $key, ?string $path): void

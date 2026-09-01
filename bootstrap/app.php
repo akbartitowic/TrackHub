@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -19,7 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'external.apikey' => \App\Http\Middleware\ExternalApiKeyMiddleware::class,
         ]);
 
-
         // Return JSON 401 for unauthenticated API requests instead of redirecting
         $middleware->redirectGuestsTo(fn ($request) =>
             $request->expectsJson() || $request->is('api/*') ? null : route('login')
@@ -27,4 +26,10 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    });
+
+if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || (env('APP_ENV') === 'production' && !is_writable(dirname(__DIR__).'/storage'))) {
+    $app->useStoragePath('/tmp/storage');
+}
+
+return $app->create();
