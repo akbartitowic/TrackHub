@@ -9,4 +9,4 @@ Route::get('/', function () {
 
 Route::get('/{any}', function () {
     return view('welcome', AppBranding::toArray());
-})->where('any', '.*');
+})->where('any', '^(?!api).*$');

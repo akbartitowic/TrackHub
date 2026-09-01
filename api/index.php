@@ -41,10 +41,19 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
         $_SERVER['DB_DATABASE'] = $dbPath;
     }
 
-    // Normalize SCRIPT_NAME so Symfony/Laravel handles /api/* routes correctly
+    // Normalize SCRIPT_NAME and REQUEST_URI so Laravel routes /api/* and web routes correctly
     $_SERVER['SCRIPT_NAME'] = '/index.php';
     $_SERVER['PHP_SELF'] = '/index.php';
     $_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__) . '/public/index.php';
+
+    if (!empty($_SERVER['HTTP_X_MATCHED_PATH'])) {
+        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_MATCHED_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+    } elseif (!empty($_SERVER['HTTP_X_NOW_PATH'])) {
+        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_NOW_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+    } elseif (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/index.php')) {
+        $rest = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php'));
+        $_SERVER['REQUEST_URI'] = ($rest === '' || $rest === false) ? '/' : $rest;
+    }
 }
 
 ini_set('display_errors', '1');
