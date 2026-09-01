@@ -103,6 +103,8 @@ class AuthController extends Controller
             $targetDb = config('database.connections.sqlite.database');
             if (file_exists($sourceDb) && filesize($sourceDb) > 4096 && is_writable(dirname($targetDb))) {
                 @copy($sourceDb, $targetDb);
+                \Illuminate\Support\Facades\DB::purge('sqlite');
+                \Illuminate\Support\Facades\DB::reconnect('sqlite');
             } else {
                 \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
                 try {
