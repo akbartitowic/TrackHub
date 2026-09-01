@@ -14,6 +14,7 @@ if (!getenv('APP_KEY') && empty($_ENV['APP_KEY']) && empty($_SERVER['APP_KEY']))
 
 $storageDirs = [
     '/tmp/storage',
+    '/tmp/storage/bootstrap',
     '/tmp/storage/framework',
     '/tmp/storage/framework/cache',
     '/tmp/storage/framework/cache/data',
@@ -28,6 +29,13 @@ foreach ($storageDirs as $dir) {
         @mkdir($dir, 0755, true);
     }
 }
+
+putenv("APP_PACKAGES_CACHE=/tmp/storage/bootstrap/packages.php");
+putenv("APP_SERVICES_CACHE=/tmp/storage/bootstrap/services.php");
+$_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/packages.php';
+$_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
+$_SERVER['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/packages.php';
+$_SERVER['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
 
 putenv("DB_CONNECTION=sqlite");
 $_ENV['DB_CONNECTION'] = 'sqlite';
