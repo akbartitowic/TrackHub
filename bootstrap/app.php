@@ -35,6 +35,22 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || (env('APP_ENV') === '
     $app->useStoragePath('/tmp/storage');
 }
 
+$app->booting(function () {
+    if (!config('database.default')) {
+        config(['database.default' => 'sqlite']);
+    }
+    if (config('database.default') === 'sqlite') {
+        $dbPath = config('database.connections.sqlite.database');
+        if (!$dbPath || !file_exists($dbPath)) {
+            $fallback = (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) ? '/tmp/database.sqlite' : database_path('database.sqlite');
+            if (!file_exists($fallback)) {
+                @touch($fallback);
+            }
+            config(['database.connections.sqlite.database' => $fallback]);
+        }
+    }
+});
+
 $app->booted(function () {
     if (config('database.default') === 'sqlite') {
         try {

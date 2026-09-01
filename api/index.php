@@ -30,6 +30,12 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
         }
     }
 
+    if (empty($_ENV['DB_CONNECTION']) && empty($_SERVER['DB_CONNECTION'])) {
+        putenv("DB_CONNECTION=sqlite");
+        $_ENV['DB_CONNECTION'] = 'sqlite';
+        $_SERVER['DB_CONNECTION'] = 'sqlite';
+    }
+
     // Default SQLite database file in /tmp if external DB is not set
     if (empty($_ENV['DB_DATABASE']) && empty($_SERVER['DB_DATABASE'])) {
         $dbPath = '/tmp/database.sqlite';
