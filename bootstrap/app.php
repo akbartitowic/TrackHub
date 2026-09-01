@@ -26,10 +26,11 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    });
+    })
+    ->create();
 
 if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || (env('APP_ENV') === 'production' && !is_writable(dirname(__DIR__).'/storage'))) {
     $app->useStoragePath('/tmp/storage');
 }
 
-return $app->create();
+return $app;
