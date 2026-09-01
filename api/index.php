@@ -75,10 +75,17 @@ try {
 } catch (\Throwable $e) {
     http_response_code(500);
     header('Content-Type: application/json');
+    $prev = $e->getPrevious() ? [
+        'message' => $e->getPrevious()->getMessage(),
+        'file' => $e->getPrevious()->getFile(),
+        'line' => $e->getPrevious()->getLine(),
+    ] : null;
+
     echo json_encode([
         'error' => true,
         'message' => $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
+        'previous' => $prev,
     ]);
 }
