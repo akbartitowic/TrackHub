@@ -40,6 +40,11 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
         $_ENV['DB_DATABASE'] = $dbPath;
         $_SERVER['DB_DATABASE'] = $dbPath;
     }
+
+    // Normalize SCRIPT_NAME so Symfony/Laravel handles /api/* routes correctly
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+    $_SERVER['PHP_SELF'] = '/index.php';
+    $_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__) . '/public/index.php';
 }
 
 ini_set('display_errors', '1');
