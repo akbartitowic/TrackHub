@@ -44,6 +44,24 @@ class AppBranding
         }
     }
 
+    public static function loginTitle(): string
+    {
+        try {
+            return Setting::where('key', 'login_title')->value('value') ?: self::appName();
+        } catch (\Throwable) {
+            return self::appName();
+        }
+    }
+
+    public static function loginSubtitle(): string
+    {
+        try {
+            return Setting::where('key', 'login_subtitle')->value('value') ?: 'Task management connected to your world.';
+        } catch (\Throwable) {
+            return 'Task management connected to your world.';
+        }
+    }
+
     public static function faviconUrl(): ?string
     {
         return PublicStorageUrl::for(self::faviconPath()) ?? '/favicon.png';
@@ -67,6 +85,8 @@ class AppBranding
         return [
             'app_name' => self::appName(),
             'app_tagline' => self::appTagline(),
+            'login_title' => self::loginTitle(),
+            'login_subtitle' => self::loginSubtitle(),
             'logo_url' => self::logoUrl(),
             'favicon_url' => self::faviconUrl(),
             'has_custom_logo' => self::logoPath() !== null,

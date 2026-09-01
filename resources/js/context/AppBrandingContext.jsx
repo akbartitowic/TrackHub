@@ -5,6 +5,8 @@ const DEFAULT_LOGO = '/logo.png';
 const DEFAULT_FAVICON = '/favicon.png';
 const DEFAULT_APP_NAME = 'Noohtify';
 const DEFAULT_APP_TAGLINE = 'Software Management';
+const DEFAULT_LOGIN_TITLE = 'HubTask';
+const DEFAULT_LOGIN_SUBTITLE = 'Task management connected to your world.';
 
 const AppBrandingContext = createContext(null);
 
@@ -24,6 +26,8 @@ export function AppBrandingProvider({ children }) {
     const [branding, setBranding] = useState({
         app_name: DEFAULT_APP_NAME,
         app_tagline: DEFAULT_APP_TAGLINE,
+        login_title: DEFAULT_LOGIN_TITLE,
+        login_subtitle: DEFAULT_LOGIN_SUBTITLE,
         logo_url: DEFAULT_LOGO,
         favicon_url: DEFAULT_FAVICON,
         has_custom_logo: false,
@@ -41,6 +45,8 @@ export function AppBrandingProvider({ children }) {
                 const next = {
                     app_name: data.data.app_name || DEFAULT_APP_NAME,
                     app_tagline: data.data.app_tagline || DEFAULT_APP_TAGLINE,
+                    login_title: data.data.login_title || data.data.app_name || DEFAULT_LOGIN_TITLE,
+                    login_subtitle: data.data.login_subtitle || DEFAULT_LOGIN_SUBTITLE,
                     logo_url: data.data.logo_url || DEFAULT_LOGO,
                     favicon_url: data.data.favicon_url || DEFAULT_FAVICON,
                     has_custom_logo: Boolean(data.data.has_custom_logo),

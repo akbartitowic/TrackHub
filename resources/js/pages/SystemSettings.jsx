@@ -64,6 +64,8 @@ export default function SystemSettings() {
     const {
         app_name: initialAppName,
         app_tagline: initialAppTagline,
+        login_title: initialLoginTitle,
+        login_subtitle: initialLoginSubtitle,
         logo_url: logoUrl,
         favicon_url: faviconUrl,
         has_custom_logo: hasCustomLogo,
@@ -73,12 +75,16 @@ export default function SystemSettings() {
 
     const [appName, setAppName] = useState(initialAppName || 'Noohtify');
     const [appTagline, setAppTagline] = useState(initialAppTagline || 'Software Management');
+    const [loginTitle, setLoginTitle] = useState(initialLoginTitle || 'HubTask');
+    const [loginSubtitle, setLoginSubtitle] = useState(initialLoginSubtitle || 'Task management connected to your world.');
     const [isSavingBrandingText, setIsSavingBrandingText] = useState(false);
 
     useEffect(() => {
         if (initialAppName) setAppName(initialAppName);
         if (initialAppTagline) setAppTagline(initialAppTagline);
-    }, [initialAppName, initialAppTagline]);
+        if (initialLoginTitle) setLoginTitle(initialLoginTitle);
+        if (initialLoginSubtitle) setLoginSubtitle(initialLoginSubtitle);
+    }, [initialAppName, initialAppTagline, initialLoginTitle, initialLoginSubtitle]);
 
     const handleSaveBrandingText = async (e) => {
         e.preventDefault();
@@ -89,10 +95,12 @@ export default function SystemSettings() {
                 body: JSON.stringify({
                     app_name: appName,
                     app_tagline: appTagline,
+                    login_title: loginTitle,
+                    login_subtitle: loginSubtitle,
                 }),
             });
             await refreshBranding();
-            alert('Nama dan Tagline aplikasi berhasil disimpan.');
+            alert('Pengaturan teks branding & halaman login berhasil disimpan.');
         } catch (err) {
             alert(`Gagal menyimpan: ${err.message}`);
         } finally {
@@ -298,7 +306,7 @@ export default function SystemSettings() {
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                                        Nama Aplikasi
+                                        Nama Aplikasi (Global)
                                     </label>
                                     <Input
                                         type="text"
@@ -309,12 +317,12 @@ export default function SystemSettings() {
                                         className="bg-white dark:bg-slate-950"
                                     />
                                     <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                        Ditampilkan di header sidebar, halaman login, dan judul aplikasi.
+                                        Ditampilkan di header sidebar dan judul default aplikasi.
                                     </p>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                                        Tagline / Subtitle
+                                        Tagline Sidebar
                                     </label>
                                     <Input
                                         type="text"
@@ -327,6 +335,36 @@ export default function SystemSettings() {
                                         Teks keterangan kecil di bawah nama aplikasi pada sidebar.
                                     </p>
                                 </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                        Teks Judul Login
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        value={loginTitle}
+                                        onChange={(e) => setLoginTitle(e.target.value)}
+                                        placeholder="Contoh: HubTask"
+                                        className="bg-white dark:bg-slate-950"
+                                    />
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        Teks judul besar di sebelah logo pada panel halaman login.
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                        Deskripsi Halaman Login
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        value={loginSubtitle}
+                                        onChange={(e) => setLoginSubtitle(e.target.value)}
+                                        placeholder="Contoh: Task management connected to your world."
+                                        className="bg-white dark:bg-slate-950"
+                                    />
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        Teks keterangan/moto di bawah logo pada panel halaman login.
+                                    </p>
+                                </div>
                             </div>
                             <div className="flex justify-end pt-1">
                                 <Button type="submit" disabled={isSavingBrandingText} size="sm" className="gap-1.5">
@@ -335,7 +373,7 @@ export default function SystemSettings() {
                                     ) : (
                                         <Save className="size-3.5" />
                                     )}
-                                    Simpan Nama & Tagline
+                                    Simpan Teks Branding
                                 </Button>
                             </div>
                         </form>

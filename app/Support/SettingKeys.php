@@ -15,6 +15,8 @@ class SettingKeys
     public const UPDATABLE = [
         'app_name',
         'app_tagline',
+        'login_title',
+        'login_subtitle',
         'company_name',
         'mail_host',
         'mail_port',

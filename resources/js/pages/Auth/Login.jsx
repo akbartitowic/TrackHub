@@ -251,7 +251,7 @@ function LiquidBackdrop({ containerRef }) {
 
 export default function Login() {
     const { login } = useAuth();
-    const { app_name, app_tagline } = useAppBranding();
+    const { app_name, login_title, login_subtitle } = useAppBranding();
     const navigate = useNavigate();
     const isLocalDev = import.meta.env.DEV || ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const [credentials, setCredentials] = useState({
@@ -297,10 +297,10 @@ export default function Login() {
                         <div className="size-12 bg-white/15 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
                             <AppLogo alt="Application logo" className="size-8" />
                         </div>
-                        <span className="text-4xl font-black text-white tracking-wide">{app_name || 'Noohtify'}</span>
+                        <span className="text-4xl font-black text-white tracking-wide">{login_title || app_name || 'HubTask'}</span>
                     </div>
                     <p className="text-white/75 font-medium text-base max-w-[18rem] leading-relaxed tracking-wide">
-                        {app_tagline || 'Software Management'}
+                        {login_subtitle || 'Task management connected to your world.'}
                     </p>
                 </div>
             </div>
@@ -319,7 +319,7 @@ export default function Login() {
                         <div className="size-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
                             <AppLogo alt="Application logo" className="size-6" />
                         </div>
-                        <span className="text-xl font-black text-white tracking-tight">{app_name || 'Noohtify'}</span>
+                        <span className="text-xl font-black text-white tracking-tight">{login_title || app_name || 'HubTask'}</span>
                     </div>
 
                     <div className="w-full rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
