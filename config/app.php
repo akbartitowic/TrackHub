@@ -119,8 +119,8 @@ return [
     */
 
     'maintenance' => [
-        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
-        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        'driver' => env('APP_MAINTENANCE_DRIVER') ?: 'file',
+        'store' => env('APP_MAINTENANCE_STORE') ?: 'database',
     ],
 
     'allow_public_signup' => filter_var(env('ALLOW_PUBLIC_SIGNUP', false), FILTER_VALIDATE_BOOL),
