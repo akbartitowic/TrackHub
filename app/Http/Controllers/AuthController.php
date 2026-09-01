@@ -99,13 +99,19 @@ class AuthController extends Controller
         ]);
 
         if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
-            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-            try {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            } catch (\Throwable) {}
+            $sourceDb = base_path('database/database.sqlite');
+            $targetDb = config('database.connections.sqlite.database');
+            if (file_exists($sourceDb) && filesize($sourceDb) > 4096 && is_writable(dirname($targetDb))) {
+                @copy($sourceDb, $targetDb);
+            } else {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                try {
+                    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+                } catch (\Throwable) {}
+            }
         }
 
-        if ($credentials['email'] === 'admin@example.com' && (!\Illuminate\Support\Facades\Schema::hasTable('users') || User::where('email', 'admin@example.com')->doesntExist())) {
+        if ($credentials['email'] === 'admin@example.com' && \Illuminate\Support\Facades\Schema::hasTable('users') && User::where('email', 'admin@example.com')->doesntExist()) {
             User::create([
                 'name' => 'Administrator',
                 'email' => 'admin@example.com',

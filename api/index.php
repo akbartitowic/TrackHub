@@ -42,13 +42,14 @@ $_SERVER['DB_CONNECTION'] = 'sqlite';
 
 // Initialize SQLite database file in /tmp from bundled database if not exists
 $dbPath = '/tmp/database.sqlite';
-if (!file_exists($dbPath) || filesize($dbPath) === 0) {
-    $sourceDb = dirname(__DIR__) . '/database/database.sqlite';
-    if (file_exists($sourceDb) && is_readable($sourceDb) && filesize($sourceDb) > 0) {
+$sourceDb = dirname(__DIR__) . '/database/database.sqlite';
+if (file_exists($sourceDb) && filesize($sourceDb) > 0) {
+    if (!file_exists($dbPath) || filesize($dbPath) < filesize($sourceDb)) {
         @copy($sourceDb, $dbPath);
-    } else {
-        @touch($dbPath);
+        @chmod($dbPath, 0666);
     }
+} elseif (!file_exists($dbPath)) {
+    @touch($dbPath);
     @chmod($dbPath, 0666);
 }
 putenv("DB_DATABASE={$dbPath}");
