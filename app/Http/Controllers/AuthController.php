@@ -99,12 +99,10 @@ class AuthController extends Controller
         ]);
 
         if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
             try {
-                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
                 \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            } catch (\Throwable $e) {
-                // Ignore migration exception if already in progress
-            }
+            } catch (\Throwable) {}
         }
 
         if ($credentials['email'] === 'admin@example.com' && (!\Illuminate\Support\Facades\Schema::hasTable('users') || User::where('email', 'admin@example.com')->doesntExist())) {
