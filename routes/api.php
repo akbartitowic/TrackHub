@@ -12,29 +12,17 @@ use App\Http\Controllers\TaskHistoryController;
 use App\Http\Controllers\TaskNoteController;
 use App\Http\Controllers\ManhourController;
 use App\Http\Controllers\PresaleController;
-use App\Http\Controllers\FinanceCategoryController;
-use App\Http\Controllers\ProjectAllocationController;
 use App\Http\Controllers\StatController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\FinancialReportController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\ProjectCategoryController;
-use App\Http\Controllers\SalesPitchController;
-use App\Http\Controllers\IntegrationController;
-use App\Http\Controllers\SalesCategoryProjectController;
 use App\Http\Controllers\TeamLoadController;
 use App\Http\Controllers\ProjectNoteController;
 use App\Http\Controllers\ReportScheduleController;
-use App\Http\Controllers\ExternalAllocationController;
-use App\Http\Controllers\ProjectIntegrationController;
-use App\Http\Controllers\GlobalIntegrationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProjectReviewController;
 use App\Http\Controllers\ReviewTokenController;
@@ -91,7 +79,6 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::get('/projects/{id}/assignment-options', [ProjectController::class, 'assignmentOptions'])->middleware('permission:list_project.update');
     Route::put('/projects/{id}/members', [ProjectController::class, 'syncMembers'])->middleware('permission:list_project.update');
     Route::patch('/projects/{id}/status', [ProjectController::class, 'updateStatus'])->middleware('permission:project_board.update');
-    Route::get('/projects/{id}/finance-summary', [ProjectAllocationController::class, 'financeSummary'])->middleware('permission:finance_monitoring.read');
     Route::post('/projects/{id}/favorite', [ProjectController::class, 'favorite'])->middleware('permission:project_board.read');
     Route::delete('/projects/{id}/favorite', [ProjectController::class, 'unfavorite'])->middleware('permission:project_board.read');
     Route::put('/projects/{id}/review-client-emails', [ProjectController::class, 'updateReviewClientEmails'])->middleware('permission:review.update');
@@ -114,11 +101,6 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:access_control.update');
     Route::patch('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:access_control.update');
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:access_control.delete');
-
-    // 3.1 Modules Routes
-    Route::get('/modules', [ModuleController::class, 'index'])->middleware('permission:modules_management.read');
-    Route::put('/modules/{module}', [ModuleController::class, 'update'])->middleware('permission:modules_management.update');
-    Route::patch('/modules/{module}', [ModuleController::class, 'update'])->middleware('permission:modules_management.update');
 
     // 3.2 Menu Items Routes
     Route::get('/menu-items', [MenuItemController::class, 'index'])->middleware('permission:modules_management.read');
@@ -177,54 +159,6 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::post('/presales/{id}/operation/acknowledge', [PresaleController::class, 'acknowledgeOperation'])->middleware('permission:presales.update');
     Route::post('/presales/{id}/proceed-project', [PresaleController::class, 'proceedToProject'])->middleware('permission:presales.update');
 
-    Route::get('/sales-pitches/form-options', [SalesPitchController::class, 'formOptions'])->middleware('permission:sales.read');
-    Route::get('/sales-pitches', [SalesPitchController::class, 'index'])->middleware('permission:sales.read');
-    Route::post('/sales-pitches/link-won-presale/{presaleId}', [SalesPitchController::class, 'linkWonPresale'])->middleware('permission:sales.update');
-    Route::get('/sales-pitches/{id}', [SalesPitchController::class, 'show'])->middleware('permission:sales.read');
-    Route::post('/sales-pitches', [SalesPitchController::class, 'store'])->middleware('permission:sales.create');
-    Route::put('/sales-pitches/{id}', [SalesPitchController::class, 'update'])->middleware('permission:sales.update');
-    Route::get('/sales-pitches/{id}/quotation/default', [SalesPitchController::class, 'defaultQuotation'])->middleware('permission:sales.read');
-    Route::post('/sales-pitches/{id}/quotation/preview', [SalesPitchController::class, 'previewQuotation'])->middleware('permission:sales.update');
-    Route::post('/sales-pitches/{id}/quotation/generate', [SalesPitchController::class, 'generateQuotation'])->middleware('permission:sales.update');
-    Route::post('/sales-pitches/{id}/quotation/logo', [SalesPitchController::class, 'uploadQuotationLogo'])->middleware('permission:sales.update');
-    Route::delete('/sales-pitches/{id}/quotation/logo', [SalesPitchController::class, 'removeQuotationLogo'])->middleware('permission:sales.update');
-    Route::delete('/sales-pitches/{id}', [SalesPitchController::class, 'destroy'])->middleware('permission:sales.delete');
-
-    Route::get('/companies', [CompanyController::class, 'index'])->middleware('permission:list_company.read');
-    Route::post('/companies', [CompanyController::class, 'store'])->middleware('permission:list_company.create');
-    Route::put('/companies/{company}', [CompanyController::class, 'update'])->middleware('permission:list_company.update');
-    Route::patch('/companies/{company}', [CompanyController::class, 'update'])->middleware('permission:list_company.update');
-    Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->middleware('permission:list_company.delete');
-    Route::get('/project-categories', [ProjectCategoryController::class, 'index'])->middleware('permission:category_project.read');
-    Route::post('/project-categories', [ProjectCategoryController::class, 'store'])->middleware('permission:category_project.create');
-    Route::put('/project-categories/{project_category}', [ProjectCategoryController::class, 'update'])->middleware('permission:category_project.update');
-    Route::patch('/project-categories/{project_category}', [ProjectCategoryController::class, 'update'])->middleware('permission:category_project.update');
-    Route::delete('/project-categories/{project_category}', [ProjectCategoryController::class, 'destroy'])->middleware('permission:category_project.delete');
-
-    Route::get('/sales-category-projects', [SalesCategoryProjectController::class, 'index'])->middleware('permission:sales_category_project.read');
-    Route::post('/sales-category-projects', [SalesCategoryProjectController::class, 'store'])->middleware('permission:sales_category_project.create');
-    Route::put('/sales-category-projects/{id}', [SalesCategoryProjectController::class, 'update'])->middleware('permission:sales_category_project.update');
-    Route::delete('/sales-category-projects/{id}', [SalesCategoryProjectController::class, 'destroy'])->middleware('permission:sales_category_project.delete');
-
-    // 6. Finance Categories Routes
-    Route::get('/finance-categories', [FinanceCategoryController::class, 'index'])->middleware('permission:finance_categories.read');
-    Route::post('/finance-categories', [FinanceCategoryController::class, 'store'])->middleware('permission:finance_categories.create');
-    Route::put('/finance-categories/{finance_category}', [FinanceCategoryController::class, 'update'])->middleware('permission:finance_categories.update');
-    Route::patch('/finance-categories/{finance_category}', [FinanceCategoryController::class, 'update'])->middleware('permission:finance_categories.update');
-    Route::delete('/finance-categories/{finance_category}', [FinanceCategoryController::class, 'destroy'])->middleware('permission:finance_categories.delete');
-
-    // 7. Project Allocations
-    Route::get('/project-allocations', [ProjectAllocationController::class, 'index'])->middleware('permission:finance_monitoring.read');
-    Route::post('/project-allocations', [ProjectAllocationController::class, 'store'])->middleware('permission:finance_monitoring.create');
-    Route::put('/project-allocations/{id}', [ProjectAllocationController::class, 'update'])->middleware('permission:finance_monitoring.update');
-    Route::put('/project-allocations/{id}/realization', [ProjectAllocationController::class, 'realize'])->middleware('permission:finance_monitoring.update');
-    Route::put('/project-allocations/{id}/paid', [ProjectAllocationController::class, 'markPaid'])->middleware('permission:finance_monitoring.update');
-    Route::delete('/project-allocations/{id}', [ProjectAllocationController::class, 'destroy'])->middleware('permission:finance_monitoring.delete');
-    Route::post('/projects/{id}/top-up', [ProjectAllocationController::class, 'topUp'])->middleware('permission:finance_monitoring.create');
-    Route::post('/projects/{id}/change-request', [ProjectAllocationController::class, 'changeRequest'])->middleware('permission:finance_monitoring.create');
-    Route::post('/projects/{id}/quota-transfer', [ProjectAllocationController::class, 'transferQuota'])->middleware('permission:finance_monitoring.update');
-    Route::post('/projects/{id}/role-quotas/{quotaId}/deactivate', [ProjectAllocationController::class, 'deactivateRoleQuota'])->middleware('permission:finance_monitoring.update');
-
     // 8. Analytics
     Route::get('/stats', [StatController::class, 'stats'])->middleware('permission:reports.read');
     Route::get('/dashboard/overview', [StatController::class, 'dashboardOverview'])->middleware('permission:dashboard.read');
@@ -235,8 +169,6 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::get('/reports/company-financials', [StatController::class, 'companyFinancials'])->middleware('permission:reports.read');
     Route::get('/reports/expense-payment-breakdown', [StatController::class, 'expensePaymentBreakdown'])->middleware('permission:reports.read');
 
-    Route::get('/integration/projects', [IntegrationController::class, 'projects'])->middleware('permission:integrasi.read');
-    Route::get('/integration/registry', [IntegrationController::class, 'registry'])->middleware('permission:integrasi.read');
     Route::get('/reports/projects', [ReportController::class, 'getProjects'])->middleware('permission:generate_report.read');
     Route::post('/reports/generate', [ReportController::class, 'generate'])->middleware('permission:generate_report.create');
     Route::post('/reports/send-email', [ReportController::class, 'sendEmail'])->middleware('permission:generate_report.create');
@@ -272,21 +204,6 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::get('/system/backup/csv', [SystemController::class, 'backupCsv'])
         ->middleware(['permission:settings.update', 'throttle:10,1']);
 
-    // 11. Financial Reports
-    Route::get('/financial-reports/summary', [FinancialReportController::class, 'getSummary'])->middleware('permission:finance_report.read');
-    Route::get('/financial-reports/project-realization', [FinancialReportController::class, 'projectRealizationSummary'])->middleware('permission:realization_report.read');
-    Route::post('/financial-reports/records', [FinancialReportController::class, 'storeRecord'])->middleware('permission:finance_report.create');
-    Route::delete('/financial-reports/records/{id}', [FinancialReportController::class, 'destroyRecord'])->middleware('permission:finance_report.delete');
-
-    // 12. Project Integration Settings
-    Route::get('/projects/{id}/integration', [ProjectIntegrationController::class, 'show'])->middleware('permission:finance_monitoring.read');
-    Route::get('/projects/{id}/integrations', [ProjectIntegrationController::class, 'index'])->middleware('permission:finance_monitoring.read');
-    Route::post('/projects/{id}/integrations', [ProjectIntegrationController::class, 'store'])->middleware('permission:finance_monitoring.update');
-    Route::put('/projects/{id}/integrations/{cid}', [ProjectIntegrationController::class, 'update'])->middleware('permission:finance_monitoring.update');
-    Route::delete('/projects/{id}/integrations/{cid}', [ProjectIntegrationController::class, 'destroy'])->middleware('permission:finance_monitoring.update');
-    Route::post('/projects/{id}/integrations/{cid}/regenerate-key', [ProjectIntegrationController::class, 'regenerateKey'])->middleware('permission:finance_monitoring.update');
-    Route::post('/projects/{id}/integrations/{cid}/test', [ProjectIntegrationController::class, 'testWebhook'])->middleware('permission:finance_monitoring.update');
-
     // 14. Review — evaluations & questions configuration
     Route::get('/review/projects', [ProjectReviewController::class, 'eligibleProjects'])->middleware('permission:review.read');
     Route::patch('/review/projects/{id}/eligibility', [ProjectReviewController::class, 'updateEligibility'])->middleware('permission:review.update');
@@ -314,21 +231,4 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::patch('/review/tokens/{id}/emails', [ReviewTokenController::class, 'updateEmails'])->middleware('permission:review.update');
     Route::get('/review/tokens/{id}/email-preview', [ReviewTokenController::class, 'emailPreview'])->middleware('permission:review.update');
     Route::post('/review/tokens/{id}/send-email', [ReviewTokenController::class, 'sendEmail'])->middleware('permission:review.update');
-
-    // 13. Global Integration Settings
-    Route::get('/global-integration', [GlobalIntegrationController::class, 'show'])->middleware('permission:finance_monitoring.read');
-    Route::get('/global-integrations', [GlobalIntegrationController::class, 'index'])->middleware('permission:finance_monitoring.read');
-    Route::post('/global-integrations', [GlobalIntegrationController::class, 'store'])->middleware('permission:finance_monitoring.update');
-    Route::put('/global-integrations/{id}', [GlobalIntegrationController::class, 'update'])->middleware('permission:finance_monitoring.update');
-    Route::delete('/global-integrations/{id}', [GlobalIntegrationController::class, 'destroy'])->middleware('permission:finance_monitoring.update');
-    Route::post('/global-integrations/{id}/regenerate-key', [GlobalIntegrationController::class, 'regenerateKey'])->middleware('permission:finance_monitoring.update');
-    Route::post('/global-integrations/{id}/test', [GlobalIntegrationController::class, 'testWebhook'])->middleware('permission:finance_monitoring.update');
-});
-
-// External API — authenticated via X-Api-Key header (no Sanctum user session needed)
-Route::middleware(['external.apikey', 'throttle:60,1'])->prefix('external')->group(function () {
-    Route::get('/allocations', [ExternalAllocationController::class, 'index']);
-    Route::post('/allocations', [ExternalAllocationController::class, 'store']);
-    Route::put('/allocations/{id}', [ExternalAllocationController::class, 'update']);
-    Route::delete('/allocations/{id}', [ExternalAllocationController::class, 'destroy']);
 });

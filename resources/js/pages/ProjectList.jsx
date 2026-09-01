@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, KanbanSquare, Clock3, RefreshCcw, CheckCircle2, ListTodo, Activity, ArrowUpDown } from 'lucide-react';
+import { Search, KanbanSquare, Clock3, RefreshCcw, CheckCircle2, ListTodo, Activity, ArrowUpDown, Plus } from 'lucide-react';
 import PaginationControls from '../components/ui/PaginationControls';
+import CreateProjectModal from '../components/CreateProjectModal';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -42,6 +43,7 @@ export default function ProjectList() {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [methodologyTab, setMethodologyTab] = useState('all');
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
 
     useEffect(() => {
         const loadProjects = async () => {
@@ -137,11 +139,17 @@ export default function ProjectList() {
             <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
 
             <div className="relative z-10 w-full px-4 py-5 sm:px-6 lg:px-8 pb-16">
-            <div className="flex flex-col gap-2 mb-8">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">List Project</h1>
-                <p className="text-slate-500 dark:text-text-secondary">
-                    Shows active and done projects with a summary of duration, progress, and task stats.
-                </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">List Project</h1>
+                    <p className="text-slate-500 dark:text-text-secondary">
+                        Shows active and done projects with a summary of duration, progress, and task stats.
+                    </p>
+                </div>
+                <Button onClick={() => setIsCreateOpen(true)} className="gap-1.5 shadow-md shadow-primary/20 shrink-0">
+                    <Plus className="size-4" />
+                    New Project
+                </Button>
             </div>
 
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -348,6 +356,7 @@ export default function ProjectList() {
                 </CardContent>
             </Card>
             </div>
+            <CreateProjectModal open={isCreateOpen} onOpenChange={setIsCreateOpen} />
         </div>
     );
 }

@@ -251,7 +251,11 @@ function LiquidBackdrop({ containerRef }) {
 export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const isLocalDev = import.meta.env.DEV || ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const [credentials, setCredentials] = useState({
+        email: isLocalDev ? 'admin@example.com' : '',
+        password: isLocalDev ? 'password123' : '',
+    });
     const [rememberMe, setRememberMe] = useState(true);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);

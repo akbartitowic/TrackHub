@@ -22,18 +22,7 @@ export default function Layout() {
         if (pathname.includes('/board/') && pathname.endsWith('/dashboard')) return 'Project Dashboard';
         if (pathname === '/users') return 'Team & Users';
         if (pathname === '/manhours') return 'Manhours Ledger';
-        if (pathname === '/reports') return 'Reports';
-        if (pathname.startsWith('/sales/pitch/new')) return 'New Pitch';
-        if (pathname.startsWith('/sales/pitch/')) return 'Sales — Pitch';
-        if (pathname === '/sales') return 'Sales';
-        if (pathname === '/presales-project-categories') return 'Business - Category Company';
-        if (pathname === '/sales-category-projects') return 'Business - Category Project';
         if (pathname.startsWith('/presales')) return MENU_NEW_PROJECT;
-        if (pathname === '/finance-realization-report') return 'Finance - Realization Report';
-        if (pathname === '/finance-monitoring') return 'Finance - Monitoring';
-        if (pathname.startsWith('/finance-monitoring/')) return 'Finance - Project Monitoring';
-        if (pathname === '/integrasi/projects') return 'Integration Monitoring';
-        if (pathname === '/integrasi/connector') return 'Connector Monitoring';
         return 'Overview';
     };
 

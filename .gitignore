@@ -1,30 +1,79 @@
+# Logs & Environment
 *.log
-.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
+.env.*
+!.env.example
+
+# OS Generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dependencies & Build Outputs
+/node_modules
+/vendor
+/public/build
+/public/hot
+/public/storage
+/.vite
+
+# Laravel Storage & Cache
+/bootstrap/cache/*.php
+!bootstrap/cache/.gitignore
+/storage/*.key
+/storage/pail
+/storage/app/public/*
+!storage/app/public/.gitignore
+/storage/framework/cache/data/*
+!storage/framework/cache/data/.gitignore
+/storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!storage/framework/testing/.gitignore
+/storage/framework/views/*
+!storage/framework/views/.gitignore
+
+# Database & SQLite
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+/database/*.sqlite
+/database/*.sqlite-journal
+/database/*.sqlite-shm
+/database/*.sqlite-wal
+*.sql
+dump.sql
+project_tracker_dump.sql
+
+# IDEs & Editor Configuration
 /.fleet
 /.idea
 /.nova
 /.phpunit.cache
 /.vscode
 /.zed
+/.phpactor.json
+.phpunit.result.cache
 /auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
 Homestead.json
 Homestead.yaml
-Thumbs.db
 
-# Graphify (local codebase-analysis CLI aid, not a project dependency)
+# AI Coding Assistants & Tooling
+/.claude
+/.cursor
+.claude/
+.cursor/
+/.gemini
+/.agents
 /graphify-out
 
-# Local discussion notes — not for commit
-/.claude/plans/newupdate.md
+

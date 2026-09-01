@@ -20,7 +20,7 @@ const ICONS = {
 };
 
 /** Sidebar section header display order — not part of `menu_items` data since it's a fixed, stable taxonomy. */
-const SECTION_ORDER = ['Business', 'Operation', 'Report', 'Finance', 'API Monitoring', 'User Management', 'System Settings'];
+const SECTION_ORDER = ['Operation', 'Report', 'User Management', 'System Settings'];
 
 const COLLAPSE_STORAGE_KEY = 'sidebar-collapsed';
 

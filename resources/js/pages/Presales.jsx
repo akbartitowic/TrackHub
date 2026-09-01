@@ -24,6 +24,7 @@ import {
   X,
 } from 'lucide-react';
 import { MENU_NEW_PROJECT } from '../constants/menuLabels';
+import CreateProjectModal from '../components/CreateProjectModal';
 
 const TAB_KEYS = ['Business', 'Operation'];
 const TAB_TO_PATH = {
@@ -179,6 +180,7 @@ export default function Presales() {
   const [winPitches, setWinPitches] = useState([]);
 
   const [selectedId, setSelectedId] = useState(null);
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
   const [isNewOpen, setIsNewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -263,26 +265,23 @@ export default function Presales() {
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [presaleRes, companyRes, categoryRes, roleRes, userRes, winPitchRes] = await Promise.all([
-        fetchAPI('/presales'),
-        fetchAPI('/companies'),
-        fetchAPI('/project-categories'),
-        fetchAPI('/project-roles'),
-        fetchAPI('/users'),
-        fetchAPI('/sales-pitches?tab=win'),
+      const [presaleRes, roleRes, userRes] = await Promise.all([
+        fetchAPI('/presales').catch(() => ({ data: [] })),
+        fetchAPI('/project-roles').catch(() => ({ data: [] })),
+        fetchAPI('/users').catch(() => ({ data: [] })),
       ]);
 
-      const items = presaleRes.data || [];
+      const items = presaleRes?.data || [];
       const activeItems = items.filter((item) => !item.converted_project_id);
       setPresales(items);
-      setCompanies(companyRes.data || []);
-      setProjectCategories(categoryRes.data || []);
-      setProjectRoles(roleRes.data || []);
-      setUsers(userRes.data || []);
-      setWinPitches(winPitchRes.data || []);
+      setCompanies([]);
+      setProjectCategories([]);
+      setProjectRoles(roleRes?.data || []);
+      setUsers(userRes?.data || []);
+      setWinPitches([]);
       if (!selectedId && activeItems.length) setSelectedId(activeItems[0].id);
     } catch (error) {
-      showFeedback('Gagal Memuat Data', 'Gagal memuat data opportunity: ' + error.message);
+      showFeedback('Gagal Memuat Data', 'Gagal memuat data: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -635,10 +634,16 @@ export default function Presales() {
               </div>
             </div>
           </div>
-          <Button size="sm" className="gap-1.5 shadow-md shadow-primary/15" onClick={() => setIsNewOpen(true)}>
-            <Plus className="size-4" />
-            Opportunity baru
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" className="gap-1.5 shadow-md shadow-primary/20 bg-primary hover:bg-primary/90 text-white font-semibold" onClick={() => setIsCreateProjectOpen(true)}>
+              <Plus className="size-4" />
+              New Project
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setIsNewOpen(true)}>
+              <Layers className="size-4" />
+              Opportunity baru
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -660,11 +665,17 @@ export default function Presales() {
           </div>
           <div className="board-column-scroll min-h-0 flex-1 overflow-y-auto p-2">
             {visiblePresales.length === 0 ? (
-              <div className="space-y-3 px-2 py-4 text-center">
+              <div className="space-y-3 px-2 py-6 text-center">
                 <p className="text-sm text-slate-500">Belum ada opportunity aktif.</p>
-                <Button variant="outline" size="sm" onClick={() => navigate('/create-project')}>
-                  Lihat List Project
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button size="sm" className="gap-1.5" onClick={() => setIsCreateProjectOpen(true)}>
+                    <Plus className="size-4" />
+                    New Project
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/create-project')}>
+                    Lihat List Project
+                  </Button>
+                </div>
               </div>
             ) : filteredPresales.length === 0 ? (
               <p className="px-2 py-6 text-center text-sm text-slate-500">Tidak ada hasil pencarian</p>
@@ -743,9 +754,16 @@ export default function Presales() {
 
         <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#151b28]">
           {!selected ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 p-10 text-slate-400">
-              <Briefcase className="size-10 opacity-25" />
-              <p className="text-sm font-medium">Pilih opportunity untuk mengisi data Business</p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 p-10 text-slate-400">
+              <Briefcase className="size-12 opacity-25" />
+              <div className="text-center">
+                <p className="text-base font-semibold text-slate-700 dark:text-slate-200">Mulai Proyek Baru</p>
+                <p className="text-sm text-slate-500 mt-1 max-w-sm">Buat proyek baru langsung ke Project Board tanpa alur approval panjang.</p>
+              </div>
+              <Button size="sm" className="gap-1.5 mt-2 bg-primary hover:bg-primary/90 text-white" onClick={() => setIsCreateProjectOpen(true)}>
+                <Plus className="size-4" />
+                New Project
+              </Button>
             </div>
           ) : (
             <>
@@ -1250,6 +1268,12 @@ export default function Presales() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <CreateProjectModal
+        open={isCreateProjectOpen}
+        onOpenChange={setIsCreateProjectOpen}
+        onSuccess={(newProj) => navigate(`/board/${newProj.id}`)}
+      />
 
       <Dialog
         open={feedbackDialog.open}

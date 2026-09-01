@@ -32,6 +32,7 @@ import {
 import { DndContext, DragOverlay, closestCorners, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import PaginationControls from '../components/ui/PaginationControls';
+import CreateProjectModal from '../components/CreateProjectModal';
 
 const RUSH_HOUR_FACTOR = 1.3;
 
@@ -426,6 +427,7 @@ export default function ProjectBoard() {
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedProjectIds, setSelectedProjectIds] = useState([]);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -1623,6 +1625,14 @@ export default function ProjectBoard() {
                                 </Button>
                             )}
                             <Button
+                                size="sm"
+                                onClick={() => setIsCreateOpen(true)}
+                                className="gap-1.5 shadow-md shadow-primary/20 bg-primary hover:bg-primary/90 text-white font-semibold"
+                            >
+                                <Plus className="size-4" />
+                                New Project
+                            </Button>
+                            <Button
                                 variant={isEditMode ? 'secondary' : 'outline'}
                                 size="sm"
                                 onClick={() => {
@@ -2082,6 +2092,8 @@ export default function ProjectBoard() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
+
+                    <CreateProjectModal open={isCreateOpen} onOpenChange={setIsCreateOpen} />
                 </div>
             </div>
         );
@@ -3647,6 +3659,7 @@ export default function ProjectBoard() {
                 </DialogContent>
             </Dialog>
 
+            <CreateProjectModal open={isCreateOpen} onOpenChange={setIsCreateOpen} />
             </div>
         </div>
     );

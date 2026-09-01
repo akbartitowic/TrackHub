@@ -8,7 +8,6 @@ use App\Models\PresaleRoleRequirement;
 use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\ProjectRoleQuota;
-use App\Models\SalesPitch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -40,11 +39,7 @@ class PresaleController extends Controller
             'estimated_budget' => 'required|numeric|min:0',
             'project_description' => 'nullable|string',
             'status' => 'nullable|string',
-            'sales_pitch_id' => [
-                'nullable',
-                Rule::exists('sales_pitches', 'id')->where(fn ($q) => $q->where('outcome', SalesPitch::OUTCOME_WIN)),
-                Rule::unique('presales', 'sales_pitch_id'),
-            ],
+            'sales_pitch_id' => 'nullable',
         ]);
 
         if (!isset($validated['status'])) {
@@ -423,12 +418,7 @@ class PresaleController extends Controller
             'estimated_value' => 'sometimes|nullable|numeric|min:0',
             'description' => 'sometimes|nullable|string',
             'status' => 'sometimes|string|max:100',
-            'sales_pitch_id' => [
-                'sometimes',
-                'nullable',
-                Rule::exists('sales_pitches', 'id')->where(fn ($q) => $q->where('outcome', SalesPitch::OUTCOME_WIN)),
-                Rule::unique('presales', 'sales_pitch_id')->ignore($presale->id),
-            ],
+            'sales_pitch_id' => 'sometimes|nullable',
         ]);
 
         if (isset($validated['project_name']) && !isset($validated['name'])) {

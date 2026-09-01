@@ -10,27 +10,14 @@ import ProjectBoardNotes from './pages/ProjectBoardNotes';
 import TeamUsers from './pages/TeamUsers';
 import ProjectRoles from './pages/ProjectRoles';
 import SystemRoles from './pages/SystemRoles';
-import Modules from './pages/Modules';
 import SystemSettings from './pages/SystemSettings';
 import Profile from './pages/Profile';
 import NotificationCenter from './pages/NotificationCenter';
 import Announcements from './pages/Announcements';
 
-import Reports from './pages/Reports';
 import Presales from './pages/Presales';
-import FinanceMonitoring from './pages/FinanceMonitoring';
-import FinanceCategories from './pages/FinanceCategories';
 import SystemLogs from './pages/SystemLogs';
 import GenerateReport from './pages/GenerateReport';
-import FinanceReport from './pages/FinanceReport';
-import RealizationReport from './pages/RealizationReport';
-import CompanyMaster from './pages/CompanyMaster';
-import ProjectCategoryMaster from './pages/ProjectCategoryMaster';
-import SalesCategoryProjectMaster from './pages/SalesCategoryProjectMaster';
-import Sales from './pages/Sales';
-import IntegrationProjects from './pages/IntegrationProjects';
-import IntegrasiMonitoring from './pages/IntegrasiMonitoring';
-import ConnectorMonitoring from './pages/ConnectorMonitoring';
 import TeamLoad from './pages/TeamLoad';
 import Review from './pages/Review';
 import ReviewConfig from './pages/ReviewConfig';
@@ -103,13 +90,7 @@ function App() {
 
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
-          <Route path="sales/pitch/new" element={<Sales />} />
-          <Route path="sales/pitch/:pitchId" element={<Sales />} />
-          <Route path="sales" element={<Sales />} />
           <Route path="presales/:view?" element={<Presales />} />
-          <Route path="presales-companies" element={<CompanyMaster />} />
-          <Route path="presales-project-categories" element={<ProjectCategoryMaster />} />
-          <Route path="sales-category-projects" element={<SalesCategoryProjectMaster />} />
           <Route path="create-project" element={<ProjectList />} />
           <Route path="board/:projectId/dashboard" element={<ProjectBoardDashboard />} />
           <Route path="board/:projectId/gantt" element={<ProjectBoardGantt />} />
@@ -122,22 +103,14 @@ function App() {
           <Route path="review/config" element={<ReviewConfig />} />
           <Route path="users" element={<TeamUsers />} />
           <Route path="roles" element={<SystemRoles />} />
-          <Route path="modules" element={<Modules />} />
           <Route path="project-roles" element={<ProjectRoles />} />
           <Route path="settings" element={<SystemSettings />} />
           <Route path="announcements" element={<Announcements />} />
           <Route path="profile" element={<Profile />} />
           <Route path="notification-center" element={<NotificationCenter />} />
 
-          <Route path="reports" element={<Reports />} />
           <Route path="generate-report" element={<GenerateReport />} />
-          <Route path="finance-monitoring/:projectId?" element={<FinanceMonitoring />} />
-          <Route path="finance-categories" element={<FinanceCategories />} />
-          <Route path="finance-report" element={<FinanceReport />} />
-          <Route path="finance-realization-report" element={<RealizationReport />} />
           <Route path="system-logs" element={<SystemLogs />} />
-          <Route path="integrasi/projects" element={<IntegrationProjects />} />
-          <Route path="integrasi/connector" element={<ConnectorMonitoring />} />
         </Route>
       </Routes>
       <LoginNotificationsModal />
