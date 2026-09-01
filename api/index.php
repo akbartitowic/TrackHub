@@ -15,6 +15,7 @@ if (!getenv('APP_KEY') && empty($_ENV['APP_KEY']) && empty($_SERVER['APP_KEY']))
 $storageDirs = [
     '/tmp/storage',
     '/tmp/storage/bootstrap',
+    '/tmp/storage/bootstrap/cache',
     '/tmp/storage/framework',
     '/tmp/storage/framework/cache',
     '/tmp/storage/framework/cache/data',
@@ -30,12 +31,21 @@ foreach ($storageDirs as $dir) {
     }
 }
 
-putenv("APP_PACKAGES_CACHE=/tmp/storage/bootstrap/packages.php");
-putenv("APP_SERVICES_CACHE=/tmp/storage/bootstrap/services.php");
-$_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/packages.php';
-$_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
-$_SERVER['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/packages.php';
-$_SERVER['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
+$pkgFile = dirname(__DIR__) . '/bootstrap/cache/packages.php';
+if (file_exists($pkgFile) && !file_exists('/tmp/storage/bootstrap/cache/packages.php')) {
+    @copy($pkgFile, '/tmp/storage/bootstrap/cache/packages.php');
+}
+$srvFile = dirname(__DIR__) . '/bootstrap/cache/services.php';
+if (file_exists($srvFile) && !file_exists('/tmp/storage/bootstrap/cache/services.php')) {
+    @copy($srvFile, '/tmp/storage/bootstrap/cache/services.php');
+}
+
+putenv("APP_PACKAGES_CACHE=/tmp/storage/bootstrap/cache/packages.php");
+putenv("APP_SERVICES_CACHE=/tmp/storage/bootstrap/cache/services.php");
+$_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/cache/packages.php';
+$_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/cache/services.php';
+$_SERVER['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/cache/packages.php';
+$_SERVER['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/cache/services.php';
 
 putenv("DB_CONNECTION=sqlite");
 $_ENV['DB_CONNECTION'] = 'sqlite';
