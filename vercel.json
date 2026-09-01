@@ -30,6 +30,7 @@
     "LOG_CHANNEL": "stderr",
     "APP_TIMEZONE": "Asia/Jakarta",
     "APP_MAINTENANCE_DRIVER": "file",
+    "APP_SERVICES_CACHE": "/tmp/storage/bootstrap/services.php",
     "DB_CONNECTION": "sqlite",
     "DB_DATABASE": "/tmp/database.sqlite"
   }

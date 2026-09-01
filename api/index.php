@@ -31,6 +31,10 @@ foreach ($storageDirs as $dir) {
     }
 }
 
+putenv("APP_SERVICES_CACHE=/tmp/storage/bootstrap/services.php");
+$_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
+$_SERVER['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
+
 putenv("DB_CONNECTION=sqlite");
 $_ENV['DB_CONNECTION'] = 'sqlite';
 $_SERVER['DB_CONNECTION'] = 'sqlite';
