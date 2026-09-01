@@ -31,9 +31,10 @@ foreach ($storageDirs as $dir) {
     }
 }
 
-putenv("APP_SERVICES_CACHE=/tmp/storage/bootstrap/services.php");
-$_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
-$_SERVER['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/services.php';
+$pkgFile = dirname(__DIR__) . '/bootstrap/cache/packages.php';
+if (file_exists($pkgFile) && !file_exists('/tmp/storage/bootstrap/cache/packages.php')) {
+    @copy($pkgFile, '/tmp/storage/bootstrap/cache/packages.php');
+}
 
 putenv("DB_CONNECTION=sqlite");
 $_ENV['DB_CONNECTION'] = 'sqlite';
