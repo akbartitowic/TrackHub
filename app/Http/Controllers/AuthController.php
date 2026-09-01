@@ -117,7 +117,7 @@ class AuthController extends Controller
             User::create([
                 'name' => 'Administrator',
                 'email' => 'admin@example.com',
-                'password' => Hash::make('password123'),
+                'password' => 'password123',
                 'role' => 'Admin',
                 'status' => 'Active',
                 'is_superuser' => true,
