@@ -31,7 +31,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->create();
 
-if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || (env('APP_ENV') === 'production' && !is_writable(dirname(__DIR__).'/storage'))) {
+if (!is_writable(dirname(__DIR__).'/storage') || is_dir('/tmp/storage')) {
     $app->useStoragePath('/tmp/storage');
 }
 
@@ -42,7 +42,7 @@ $app->booting(function () {
     if (config('database.default') === 'sqlite') {
         $dbPath = config('database.connections.sqlite.database');
         if (!$dbPath || !file_exists($dbPath) || (file_exists($dbPath) && filesize($dbPath) === 0)) {
-            $target = (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) ? '/tmp/database.sqlite' : database_path('database.sqlite');
+            $target = (!is_writable(dirname(__DIR__).'/database') || is_file('/tmp/database.sqlite')) ? '/tmp/database.sqlite' : database_path('database.sqlite');
             $source = database_path('database.sqlite');
             if ($target !== $source && (!file_exists($target) || filesize($target) === 0) && file_exists($source) && filesize($source) > 0) {
                 @copy($source, $target);

@@ -12,58 +12,54 @@ if (!getenv('APP_KEY') && empty($_ENV['APP_KEY']) && empty($_SERVER['APP_KEY']))
     $_SERVER['APP_KEY'] = $defaultKey;
 }
 
-if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
-    $storageDirs = [
-        '/tmp/storage',
-        '/tmp/storage/framework',
-        '/tmp/storage/framework/cache',
-        '/tmp/storage/framework/cache/data',
-        '/tmp/storage/framework/sessions',
-        '/tmp/storage/framework/views',
-        '/tmp/storage/logs',
-        '/tmp/storage/app',
-        '/tmp/storage/app/public',
-    ];
-    foreach ($storageDirs as $dir) {
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0755, true);
-        }
+$storageDirs = [
+    '/tmp/storage',
+    '/tmp/storage/framework',
+    '/tmp/storage/framework/cache',
+    '/tmp/storage/framework/cache/data',
+    '/tmp/storage/framework/sessions',
+    '/tmp/storage/framework/views',
+    '/tmp/storage/logs',
+    '/tmp/storage/app',
+    '/tmp/storage/app/public',
+];
+foreach ($storageDirs as $dir) {
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
     }
+}
 
-    if (empty($_ENV['DB_CONNECTION']) && empty($_SERVER['DB_CONNECTION'])) {
-        putenv("DB_CONNECTION=sqlite");
-        $_ENV['DB_CONNECTION'] = 'sqlite';
-        $_SERVER['DB_CONNECTION'] = 'sqlite';
+putenv("DB_CONNECTION=sqlite");
+$_ENV['DB_CONNECTION'] = 'sqlite';
+$_SERVER['DB_CONNECTION'] = 'sqlite';
+
+// Initialize SQLite database file in /tmp from bundled database if not exists
+$dbPath = '/tmp/database.sqlite';
+if (!file_exists($dbPath) || filesize($dbPath) === 0) {
+    $sourceDb = dirname(__DIR__) . '/database/database.sqlite';
+    if (file_exists($sourceDb) && is_readable($sourceDb) && filesize($sourceDb) > 0) {
+        @copy($sourceDb, $dbPath);
+    } else {
+        @touch($dbPath);
     }
+    @chmod($dbPath, 0666);
+}
+putenv("DB_DATABASE={$dbPath}");
+$_ENV['DB_DATABASE'] = $dbPath;
+$_SERVER['DB_DATABASE'] = $dbPath;
 
-    // Initialize SQLite database file in /tmp from bundled database if not exists
-    $dbPath = '/tmp/database.sqlite';
-    if (!file_exists($dbPath) || filesize($dbPath) === 0) {
-        $sourceDb = dirname(__DIR__) . '/database/database.sqlite';
-        if (file_exists($sourceDb) && is_readable($sourceDb) && filesize($sourceDb) > 0) {
-            @copy($sourceDb, $dbPath);
-        } else {
-            @touch($dbPath);
-        }
-        @chmod($dbPath, 0666);
-    }
-    putenv("DB_DATABASE={$dbPath}");
-    $_ENV['DB_DATABASE'] = $dbPath;
-    $_SERVER['DB_DATABASE'] = $dbPath;
+// Normalize SCRIPT_NAME and REQUEST_URI so Laravel routes /api/* and web routes correctly
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF'] = '/index.php';
+$_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__) . '/public/index.php';
 
-    // Normalize SCRIPT_NAME and REQUEST_URI so Laravel routes /api/* and web routes correctly
-    $_SERVER['SCRIPT_NAME'] = '/index.php';
-    $_SERVER['PHP_SELF'] = '/index.php';
-    $_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__) . '/public/index.php';
-
-    if (!empty($_SERVER['HTTP_X_MATCHED_PATH'])) {
-        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_MATCHED_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-    } elseif (!empty($_SERVER['HTTP_X_NOW_PATH'])) {
-        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_NOW_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-    } elseif (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/index.php')) {
-        $rest = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php'));
-        $_SERVER['REQUEST_URI'] = ($rest === '' || $rest === false) ? '/' : $rest;
-    }
+if (!empty($_SERVER['HTTP_X_MATCHED_PATH'])) {
+    $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_MATCHED_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+} elseif (!empty($_SERVER['HTTP_X_NOW_PATH'])) {
+    $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_NOW_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+} elseif (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/index.php')) {
+    $rest = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php'));
+    $_SERVER['REQUEST_URI'] = ($rest === '' || $rest === false) ? '/' : $rest;
 }
 
 ini_set('display_errors', '1');
