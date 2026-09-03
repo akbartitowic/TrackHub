@@ -47,8 +47,8 @@ if ($activeConnection === 'sqlite') {
     // Initialize SQLite database file in /tmp from bundled database if not exists
     $dbPath = '/tmp/database.sqlite';
     $sourceDb = dirname(__DIR__) . '/database/database.sqlite';
-    if (!file_exists($dbPath)) {
-        if (file_exists($sourceDb) && filesize($sourceDb) > 0) {
+    if (!file_exists($dbPath) || filesize($dbPath) < 4096) {
+        if (file_exists($sourceDb) && filesize($sourceDb) > 4096) {
             @copy($sourceDb, $dbPath);
         } else {
             @touch($dbPath);

@@ -98,6 +98,19 @@ class AppServiceProvider extends ServiceProvider
 
         if ($this->app->environment('production') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
+
+            try {
+                if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                    $sourceDb = base_path('database/database.sqlite');
+                    $targetDb = config('database.connections.sqlite.database', '/tmp/database.sqlite');
+                    if (file_exists($sourceDb) && filesize($sourceDb) > 4096) {
+                        @copy($sourceDb, $targetDb);
+                        \Illuminate\Support\Facades\DB::purge('sqlite');
+                        \Illuminate\Support\Facades\DB::reconnect('sqlite');
+                    }
+                }
+            } catch (\Throwable) {
+            }
         }
     }
 }
