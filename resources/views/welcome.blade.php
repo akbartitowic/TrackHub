@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Noohtify</title>
+    <title>{{ $app_name ?? 'MyActivity' }}</title>
     <link rel="icon" type="image/png" href="{{ $favicon_url ?? '/favicon.png' }}">
     @viteReactRefresh
     @vite(['resources/js/index.css', 'resources/js/main.jsx'])
