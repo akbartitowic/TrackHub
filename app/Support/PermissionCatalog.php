@@ -19,21 +19,11 @@ class PermissionCatalog
         return [
             'Dashboard' => ['read'],
             'Presales' => ['create', 'read', 'update', 'delete'],
-            'Sales' => ['create', 'read', 'update', 'delete'],
-            'List Company' => ['create', 'read', 'update', 'delete'],
-            'Category Project' => ['create', 'read', 'update', 'delete'],
-            'Sales Category Project' => ['create', 'read', 'update', 'delete'],
             'List Project' => ['create', 'read', 'update', 'delete'],
             'Project Board' => ['create', 'read', 'update', 'edit_last_update'],
             'Load' => ['read'],
             'Review' => ['create', 'read', 'update', 'delete', 'view_all'],
-            'Reports' => ['read'],
             'Generate Report' => ['create', 'read'],
-            'Finance Monitoring' => ['create', 'read', 'update', 'delete'],
-            'Finance Categories' => ['create', 'read', 'update', 'delete'],
-            'Finance Report' => ['create', 'read', 'delete'],
-            'Realization Report' => ['read'],
-            'Integrasi' => ['read'],
             'Teams & Users' => ['create', 'read', 'update', 'delete'],
             'Access Control' => ['create', 'read', 'update', 'delete'],
             'Project Roles' => ['create', 'read', 'update', 'delete'],
@@ -42,7 +32,6 @@ class PermissionCatalog
             'Announcements' => ['create', 'read', 'update', 'delete'],
             'Profile' => ['read', 'update'],
             'Notification Center' => ['read', 'update'],
-            'Modules Management' => ['create', 'read', 'update', 'delete'],
         ];
     }
 
@@ -85,11 +74,7 @@ class PermissionCatalog
     }
 
     /**
-     * Some migrations older than the `modules` table call sync() while
-     * bootstrapping a fresh install (before that table/column exist yet).
-     * These flags let sync() degrade gracefully in that narrow window —
-     * the next sync() call, once the schema has caught up, self-heals
-     * anything left unlinked here.
+     * Sync permissions and clean up any obsolete modules or permissions.
      */
     public static function sync(): void
     {
@@ -125,8 +110,11 @@ class PermissionCatalog
             }
         }
 
+        $activeModuleSlugs = [];
+
         foreach (self::menuActionMap() as $module => $moduleActions) {
             $moduleSlug = Str::slug($module, '_');
+            $activeModuleSlugs[] = $moduleSlug;
 
             $moduleModel = $modulesTableExists
                 ? Module::firstOrCreate(
@@ -171,6 +159,22 @@ class PermissionCatalog
                 ->whereNotIn('slug', $allowedSlugs)
                 ->delete();
         }
+
+        // Clean up obsolete modules and their permissions that are no longer in menuActionMap()
+        if ($modulesTableExists) {
+            $obsoleteModules = Module::whereNotIn('slug', $activeModuleSlugs)->get();
+            foreach ($obsoleteModules as $obsMod) {
+                Permission::where('module_id', $obsMod->id)->delete();
+                $obsMod->delete();
+            }
+        }
+
+        // Clean up any stray permissions not belonging to active module slugs
+        Permission::where(function ($query) use ($activeModuleSlugs) {
+            foreach ($activeModuleSlugs as $slug) {
+                $query->where('slug', 'not like', "{$slug}.%");
+            }
+        })->delete();
     }
 
     /** @return list<int> */

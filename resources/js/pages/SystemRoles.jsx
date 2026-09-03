@@ -46,12 +46,7 @@ const ACTION_BADGE_LABELS = {
     view_all: 'all',
 };
 
-/* Per-module, per-action extra notes — used to clarify integration impact */
-const MODULE_ACTION_NOTES = {
-    finance_monitoring: {
-        update: 'Termasuk akses melihat & mengelola konfigurasi API integrasi (API key, webhook)',
-    },
-};
+const MODULE_ACTION_NOTES = {};
 
 function formatModuleName(raw) {
     return raw
