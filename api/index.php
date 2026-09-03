@@ -33,6 +33,7 @@ foreach ($storageDirs as $dir) {
 
 @unlink('/tmp/storage/bootstrap/cache/routes-v7.php');
 @unlink('/tmp/storage/bootstrap/cache/config.php');
+@unlink('/tmp/storage/bootstrap/cache/packages.php');
 
 $viewsDir = '/tmp/storage/framework/views';
 if (is_dir($viewsDir)) {
