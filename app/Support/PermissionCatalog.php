@@ -104,8 +104,26 @@ class PermissionCatalog
 
         $sortOrder = 0;
         $modulesTableExists = Schema::hasTable('modules');
-        $permissionsHaveModuleId = Schema::hasColumn('permissions', 'module_id');
-        $permissionsHaveModuleString = Schema::hasColumn('permissions', 'module');
+        $permissionsHaveModuleId = true;
+        $permissionsHaveModuleString = false;
+
+        if ($modulesTableExists) {
+            try {
+                $driver = \Illuminate\Support\Facades\DB::getDriverName();
+                if ($driver === 'sqlite') {
+                    $cols = \Illuminate\Support\Facades\DB::select('PRAGMA table_info(permissions)');
+                    $colNames = array_map(fn ($c) => (string) (is_object($c) ? $c->name : ($c['name'] ?? '')), $cols);
+                    $permissionsHaveModuleId = in_array('module_id', $colNames, true);
+                    $permissionsHaveModuleString = in_array('module', $colNames, true);
+                } else {
+                    $permissionsHaveModuleId = Schema::hasColumn('permissions', 'module_id');
+                    $permissionsHaveModuleString = Schema::hasColumn('permissions', 'module');
+                }
+            } catch (\Throwable) {
+                $permissionsHaveModuleId = true;
+                $permissionsHaveModuleString = false;
+            }
+        }
 
         foreach (self::menuActionMap() as $module => $moduleActions) {
             $moduleSlug = Str::slug($module, '_');
