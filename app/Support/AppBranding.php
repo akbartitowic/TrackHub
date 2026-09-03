@@ -71,7 +71,7 @@ class AppBranding
     public static function logoFilesystemPath(): ?string
     {
         $path = self::logoPath();
-        if ($path && Storage::disk('public')->exists($path)) {
+        if ($path && !str_starts_with($path, 'data:') && Storage::disk('public')->exists($path)) {
             return Storage::disk('public')->path($path);
         }
 
@@ -106,7 +106,7 @@ class AppBranding
 
     public static function deleteStoredFile(?string $path): void
     {
-        if ($path && Storage::disk('public')->exists($path)) {
+        if ($path && !str_starts_with($path, 'data:') && Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path);
         }
     }

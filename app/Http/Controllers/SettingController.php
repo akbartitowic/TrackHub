@@ -29,9 +29,17 @@ class SettingController extends Controller
             'logo' => 'required|image|max:4096',
         ]);
 
+        $file = $request->file('logo');
+        $mime = $file->getMimeType() ?: 'image/png';
+        $base64 = base64_encode(file_get_contents($file->getRealPath()));
+        $dataUri = "data:{$mime};base64,{$base64}";
+
         AppBranding::deleteStoredFile(AppBranding::logoPath());
-        $path = $request->file('logo')->store('app-branding', 'public');
-        AppBranding::setLogoPath($path);
+        try {
+            $file->store('app-branding', 'public');
+        } catch (\Throwable) {}
+
+        AppBranding::setLogoPath($dataUri);
 
         return response()->json([
             'status' => 'success',
@@ -58,9 +66,17 @@ class SettingController extends Controller
             'favicon' => 'required|image|max:2048|mimes:png,jpg,jpeg,gif,webp,ico',
         ]);
 
+        $file = $request->file('favicon');
+        $mime = $file->getMimeType() ?: 'image/png';
+        $base64 = base64_encode(file_get_contents($file->getRealPath()));
+        $dataUri = "data:{$mime};base64,{$base64}";
+
         AppBranding::deleteStoredFile(AppBranding::faviconPath());
-        $path = $request->file('favicon')->store('app-branding', 'public');
-        AppBranding::setFaviconPath($path);
+        try {
+            $file->store('app-branding', 'public');
+        } catch (\Throwable) {}
+
+        AppBranding::setFaviconPath($dataUri);
 
         return response()->json([
             'status' => 'success',

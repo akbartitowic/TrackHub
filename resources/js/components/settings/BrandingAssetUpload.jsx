@@ -42,9 +42,15 @@ export default function BrandingAssetUpload({
         try {
             const response = await fetch(`${getApiUrl()}${uploadPath}`, {
                 method: 'POST',
+                credentials: 'omit',
                 headers: {
                     Accept: 'application/json',
-                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    ...(token
+                        ? {
+                              Authorization: `Bearer ${token}`,
+                              'X-Authorization': `Bearer ${token}`,
+                          }
+                        : {}),
                 },
                 body: formData,
             });
@@ -71,9 +77,15 @@ export default function BrandingAssetUpload({
         try {
             const response = await fetch(`${getApiUrl()}${deletePath}`, {
                 method: 'DELETE',
+                credentials: 'omit',
                 headers: {
                     Accept: 'application/json',
-                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    ...(token
+                        ? {
+                              Authorization: `Bearer ${token}`,
+                              'X-Authorization': `Bearer ${token}`,
+                          }
+                        : {}),
                 },
             });
             const data = await response.json().catch(() => ({}));

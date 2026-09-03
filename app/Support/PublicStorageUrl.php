@@ -16,6 +16,10 @@ class PublicStorageUrl
             return null;
         }
 
+        if (str_starts_with($path, 'data:') || str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
         $normalized = ltrim(str_replace('\\', '/', $path), '/');
 
         return '/storage/' . $normalized;
