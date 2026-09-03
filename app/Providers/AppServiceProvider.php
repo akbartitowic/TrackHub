@@ -70,6 +70,32 @@ class AppServiceProvider extends ServiceProvider
 
         \Laravel\Sanctum\Sanctum::usePersonalAccessTokenModel(\App\Models\PersonalAccessToken::class);
 
+        \Laravel\Sanctum\Sanctum::getAccessTokenFromRequestUsing(function (Request $request) {
+            $token = $request->bearerToken();
+            if ($token) {
+                return $token;
+            }
+
+            foreach (['X-Authorization', 'Authorization', 'x-authorization', 'authorization'] as $headerName) {
+                $header = $request->header($headerName);
+                if ($header && preg_match('/Bearer\s+(\S+)/i', $header, $matches)) {
+                    return $matches[1];
+                }
+            }
+
+            if (function_exists('getallheaders')) {
+                foreach (getallheaders() as $k => $v) {
+                    if (strcasecmp($k, 'Authorization') === 0 || strcasecmp($k, 'X-Authorization') === 0) {
+                        if (preg_match('/Bearer\s+(\S+)/i', $v, $matches)) {
+                            return $matches[1];
+                        }
+                    }
+                }
+            }
+
+            return null;
+        });
+
         if ($this->app->environment('production') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }

@@ -45,19 +45,27 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
         [$entropy, $payloadBase64, $signature] = $parts;
         $body = "{$id}|{$entropy}.{$payloadBase64}";
 
-        $appKey = (string) (
-            config('app.key')
-            ?: env('APP_KEY')
-            ?: getenv('APP_KEY')
-            ?: 'base64:WbSgQ7l6e6h7VvJk1i8m8N3p0Q2r4T6v8X0z2B4d6F8='
-        );
+        $candidateKeys = array_unique(array_filter([
+            (string) config('app.key'),
+            (string) env('APP_KEY'),
+            (string) getenv('APP_KEY'),
+            'base64:WbSgQ7l6e6h7VvJk1i8m8N3p0Q2r4T6v8X0z2B4d6F8=',
+            'base64:gp1deOOI6cIAwmprWoxYdIkh4i5WLfW2sf/DmKekmMI=',
+        ]));
 
-        $validSig = hash_equals($signature, hash_hmac('sha256', $body, $appKey));
-
-        // If default key format differs, also check fallback raw key
-        if (!$validSig && str_starts_with($appKey, 'base64:')) {
-            $rawKey = base64_decode(substr($appKey, 7));
-            $validSig = hash_equals($signature, hash_hmac('sha256', $body, $rawKey));
+        $validSig = false;
+        foreach ($candidateKeys as $k) {
+            if (hash_equals($signature, hash_hmac('sha256', $body, $k))) {
+                $validSig = true;
+                break;
+            }
+            if (str_starts_with($k, 'base64:')) {
+                $raw = base64_decode(substr($k, 7));
+                if (hash_equals($signature, hash_hmac('sha256', $body, $raw))) {
+                    $validSig = true;
+                    break;
+                }
+            }
         }
 
         if (!$validSig) {
