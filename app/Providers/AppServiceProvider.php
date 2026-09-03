@@ -70,34 +70,40 @@ class AppServiceProvider extends ServiceProvider
 
         \Laravel\Sanctum\Sanctum::usePersonalAccessTokenModel(\App\Models\PersonalAccessToken::class);
 
-        \Laravel\Sanctum\Sanctum::authenticateAccessTokensUsing(function ($token, $isValid) {
-            return ($token && $token->tokenable) ? true : $isValid;
-        });
-
-        \Laravel\Sanctum\Sanctum::getAccessTokenFromRequestUsing(function (Request $request) {
+        \Illuminate\Support\Facades\Auth::viaRequest('sanctum', function (Request $request) {
             $token = $request->bearerToken();
-            if ($token) {
-                return $token;
-            }
-
-            foreach (['X-Authorization', 'Authorization', 'x-authorization', 'authorization'] as $headerName) {
-                $header = $request->header($headerName);
-                if ($header && preg_match('/Bearer\s+(\S+)/i', $header, $matches)) {
-                    return $matches[1];
+            if (!$token) {
+                foreach (['X-Authorization', 'Authorization', 'x-authorization', 'authorization'] as $headerName) {
+                    $header = $request->header($headerName);
+                    if ($header && preg_match('/Bearer\s+(\S+)/i', $header, $matches)) {
+                        $token = $matches[1];
+                        break;
+                    }
                 }
             }
 
-            if (function_exists('getallheaders')) {
+            if (!$token && function_exists('getallheaders')) {
                 foreach (getallheaders() as $k => $v) {
                     if (strcasecmp($k, 'Authorization') === 0 || strcasecmp($k, 'X-Authorization') === 0) {
                         if (preg_match('/Bearer\s+(\S+)/i', $v, $matches)) {
-                            return $matches[1];
+                            $token = $matches[1];
+                            break;
                         }
                     }
                 }
             }
 
-            return null;
+            if (!$token) {
+                return null;
+            }
+
+            $accessToken = \App\Models\PersonalAccessToken::findToken($token);
+            if (!$accessToken || !$accessToken->tokenable) {
+                return null;
+            }
+
+            $user = $accessToken->tokenable;
+            return $user->withAccessToken($accessToken);
         });
 
         if ($this->app->environment('production') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
