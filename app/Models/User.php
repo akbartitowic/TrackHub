@@ -56,7 +56,6 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
             'password_changed_at' => 'datetime',
             'notify_task_assigned' => 'boolean',
             'notify_task_due_reminder' => 'boolean',
@@ -64,6 +63,20 @@ class User extends Authenticatable
             'notify_mh_threshold' => 'boolean',
             'notify_login_alert' => 'boolean',
         ];
+    }
+
+    public function setPasswordAttribute($value): void
+    {
+        if ($value === null || $value === '') {
+            return;
+        }
+
+        $str = (string) $value;
+        if (str_starts_with($str, '$2y$') || str_starts_with($str, '$2a$') || str_starts_with($str, '$2b$')) {
+            $this->attributes['password'] = $str;
+        } else {
+            $this->attributes['password'] = password_hash($str, PASSWORD_BCRYPT, ['cost' => 10]);
+        }
     }
 
     protected static function booted(): void
