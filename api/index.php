@@ -31,10 +31,8 @@ foreach ($storageDirs as $dir) {
     }
 }
 
-$pkgFile = dirname(__DIR__) . '/bootstrap/cache/packages.php';
-if (file_exists($pkgFile) && !file_exists('/tmp/storage/bootstrap/cache/packages.php')) {
-    @copy($pkgFile, '/tmp/storage/bootstrap/cache/packages.php');
-}
+@unlink('/tmp/storage/bootstrap/cache/routes-v7.php');
+@unlink('/tmp/storage/bootstrap/cache/config.php');
 
 if (!getenv('DB_CONNECTION') && empty($_ENV['DB_CONNECTION']) && empty($_SERVER['DB_CONNECTION'])) {
     putenv("DB_CONNECTION=sqlite");
