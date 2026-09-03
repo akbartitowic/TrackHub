@@ -92,6 +92,8 @@ class UserController extends Controller
 
         if (empty($validated['password'])) {
             unset($validated['password']);
+        } else {
+            $validated['password_changed_at'] = now();
         }
 
         $oldRoleId = $user->role_id;
