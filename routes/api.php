@@ -42,6 +42,36 @@ Route::post('/signup', [AuthController::class, 'signup'])
 Route::get('/branding', [SettingController::class, 'branding']);
 Route::get('/announcements/active', [AnnouncementController::class, 'active']);
 
+Route::get('/debug-diag', function (Request $request) {
+    $token = $request->bearerToken();
+    $model = \Laravel\Sanctum\Sanctum::$personalAccessTokenModel;
+    $hasUsers = \Illuminate\Support\Facades\Schema::hasTable('users');
+    $userCount = $hasUsers ? \App\Models\User::count() : 0;
+    $foundToken = null;
+    $error = null;
+    try {
+        $foundToken = $model::findToken($token);
+    } catch (\Throwable $e) {
+        $error = $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine();
+    }
+    return response()->json([
+        'token' => $token,
+        'has_users_table' => $hasUsers,
+        'user_count' => $userCount,
+        'found_token' => $foundToken ? [
+            'id' => $foundToken->id,
+            'tokenable_id' => $foundToken->tokenable_id,
+            'user' => $foundToken->tokenable?->email,
+        ] : null,
+        'error' => $error,
+        'headers' => [
+            'authorization' => $request->header('Authorization'),
+            'x-authorization' => $request->header('X-Authorization'),
+            'server_auth' => $request->server('HTTP_AUTHORIZATION'),
+        ],
+    ]);
+});
+
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
