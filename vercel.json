@@ -26,7 +26,7 @@
     "APP_DEBUG": "true",
     "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
     "CACHE_STORE": "array",
-    "SESSION_DRIVER": "cookie",
+    "SESSION_DRIVER": "array",
     "LOG_CHANNEL": "stderr",
     "APP_TIMEZONE": "Asia/Jakarta",
     "APP_MAINTENANCE_DRIVER": "file",
