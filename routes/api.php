@@ -42,54 +42,6 @@ Route::post('/signup', [AuthController::class, 'signup'])
 Route::get('/branding', [SettingController::class, 'branding']);
 Route::get('/announcements/active', [AnnouncementController::class, 'active']);
 
-Route::get('/debug-diag', function (Request $request) {
-    $token = $request->bearerToken();
-    $model = \Laravel\Sanctum\Sanctum::$personalAccessTokenModel;
-    $hasUsers = \Illuminate\Support\Facades\Schema::hasTable('users');
-    $userCount = $hasUsers ? \App\Models\User::count() : 0;
-    $foundToken = null;
-    $error = null;
-    try {
-        $foundToken = $model::findToken($token);
-    } catch (\Throwable $e) {
-        $error = $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine();
-    }
-    return response()->json([
-        'token' => $token,
-        'has_users_table' => $hasUsers,
-        'user_count' => $userCount,
-        'found_token' => $foundToken ? [
-            'id' => $foundToken->id,
-            'tokenable_id' => $foundToken->tokenable_id,
-            'user' => $foundToken->tokenable?->email,
-        ] : null,
-        'error' => $error,
-        'headers' => [
-            'authorization' => $request->header('Authorization'),
-            'x-authorization' => $request->header('X-Authorization'),
-            'server_auth' => $request->server('HTTP_AUTHORIZATION'),
-        ],
-    ]);
-});
-
-Route::get('/test-sanctum-only', function (Request $request) {
-    return response()->json([
-        'user' => $request->user(),
-        'auth_user' => auth('sanctum')->user(),
-    ]);
-})->middleware('auth:sanctum');
-
-Route::get('/test-manual-auth', function (Request $request) {
-    $token = $request->bearerToken();
-    $model = \Laravel\Sanctum\Sanctum::$personalAccessTokenModel;
-    $accessToken = $model::findToken($token);
-    $user = $accessToken?->tokenable;
-    return response()->json([
-        'manual_user' => $user ? $user->email : null,
-        'has_token' => !is_null($accessToken),
-    ]);
-});
-
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);

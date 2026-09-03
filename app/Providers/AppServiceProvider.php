@@ -70,6 +70,10 @@ class AppServiceProvider extends ServiceProvider
 
         \Laravel\Sanctum\Sanctum::usePersonalAccessTokenModel(\App\Models\PersonalAccessToken::class);
 
+        \Laravel\Sanctum\Sanctum::authenticateAccessTokensUsing(function ($token, $isValid) {
+            return ($token && $token->tokenable) ? true : $isValid;
+        });
+
         \Laravel\Sanctum\Sanctum::getAccessTokenFromRequestUsing(function (Request $request) {
             $token = $request->bearerToken();
             if ($token) {
