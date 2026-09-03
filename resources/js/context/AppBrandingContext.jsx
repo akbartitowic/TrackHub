@@ -3,9 +3,9 @@ import { getApiUrl } from '../services/api';
 
 const DEFAULT_LOGO = '/logo.png';
 const DEFAULT_FAVICON = '/favicon.png';
-const DEFAULT_APP_NAME = 'Noohtify';
+const DEFAULT_APP_NAME = 'MyActivity';
 const DEFAULT_APP_TAGLINE = 'Software Management';
-const DEFAULT_LOGIN_TITLE = 'HubTask';
+const DEFAULT_LOGIN_TITLE = 'MyActivity';
 const DEFAULT_LOGIN_SUBTITLE = 'Task management connected to your world.';
 
 const AppBrandingContext = createContext(null);

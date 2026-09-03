@@ -167,9 +167,9 @@ class SettingController extends Controller
         Mail::purge('smtp');
 
         try {
-            Mail::raw('This is a test email from Noohtify to verify your SMTP settings.', function ($message) use ($settings) {
+            Mail::raw('This is a test email from MyActivity to verify your SMTP settings.', function ($message) use ($settings) {
                 $message->to($settings['mail_from_address'])
-                    ->subject('Noohtify SMTP Test');
+                    ->subject('MyActivity SMTP Test');
             });
 
             $this->log('System', 'SMTP Test Email Sent', "Test email sent successfully to '{$settings['mail_from_address']}' via host '{$settings['mail_host']}'");

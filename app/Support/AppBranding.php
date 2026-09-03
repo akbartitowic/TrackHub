@@ -29,9 +29,9 @@ class AppBranding
     public static function appName(): string
     {
         try {
-            return Setting::where('key', 'app_name')->value('value') ?: 'Noohtify';
+            return Setting::where('key', 'app_name')->value('value') ?: 'MyActivity';
         } catch (\Throwable) {
-            return 'Noohtify';
+            return 'MyActivity';
         }
     }
 
