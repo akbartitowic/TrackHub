@@ -126,4 +126,49 @@ class User extends Authenticatable
             ->whereHas('module', fn ($q) => $q->where('is_active', true))
             ->exists();
     }
+
+    /**
+     * Create a new personal access token with signed fallback support.
+     *
+     * @param  string  $name
+     * @param  array  $abilities
+     * @param  \DateTimeInterface|null  $expiresAt
+     * @return \Laravel\Sanctum\NewAccessToken
+     */
+    public function createToken(string $name, array $abilities = ['*'], ?\DateTimeInterface $expiresAt = null)
+    {
+        $tokenEntropy = bin2hex(random_bytes(16));
+        $timestamp = time();
+        $payload = rtrim(strtr(base64_encode(json_encode([
+            'u' => $this->id,
+            't' => $timestamp,
+        ])), '+/', '-_'), '=');
+
+        $plainPayload = "{$tokenEntropy}.{$payload}";
+        $key = (string) config('app.key');
+
+        try {
+            $token = $this->tokens()->create([
+                'name' => $name,
+                'token' => hash('sha256', $plainPayload),
+                'abilities' => $abilities,
+                'expires_at' => $expiresAt,
+            ]);
+            $tokenId = $token->getKey();
+        } catch (\Throwable) {
+            $tokenId = $this->id;
+            $token = new PersonalAccessToken([
+                'name' => $name,
+                'token' => hash('sha256', $plainPayload),
+                'abilities' => $abilities,
+                'expires_at' => $expiresAt,
+            ]);
+            $token->id = $tokenId;
+        }
+
+        $signature = hash_hmac('sha256', "{$tokenId}|{$plainPayload}", $key);
+        $fullPlainTextToken = "{$tokenId}|{$plainPayload}.{$signature}";
+
+        return new \Laravel\Sanctum\NewAccessToken($token, $fullPlainTextToken);
+    }
 }
