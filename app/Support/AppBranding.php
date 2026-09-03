@@ -30,7 +30,7 @@ class AppBranding
     {
         try {
             $val = Setting::where('key', 'app_name')->value('value');
-            if (!$val || $val === 'Noohtify' || $val === 'Laravel') {
+            if (!$val || strcasecmp(trim((string) $val), 'noohtify') === 0 || strcasecmp(trim((string) $val), 'laravel') === 0) {
                 return 'MyActivity';
             }
             return (string) $val;
@@ -52,7 +52,7 @@ class AppBranding
     {
         try {
             $val = Setting::where('key', 'login_title')->value('value');
-            if (!$val || $val === 'Noohtify' || $val === 'HubTask' || $val === 'Laravel') {
+            if (!$val || strcasecmp(trim((string) $val), 'noohtify') === 0 || strcasecmp(trim((string) $val), 'hubtask') === 0 || strcasecmp(trim((string) $val), 'laravel') === 0) {
                 return self::appName();
             }
             return (string) $val;
