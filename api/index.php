@@ -34,6 +34,18 @@ foreach ($storageDirs as $dir) {
 @unlink('/tmp/storage/bootstrap/cache/routes-v7.php');
 @unlink('/tmp/storage/bootstrap/cache/config.php');
 
+$viewsDir = '/tmp/storage/framework/views';
+if (is_dir($viewsDir)) {
+    $files = glob("{$viewsDir}/*");
+    if ($files) {
+        foreach ($files as $f) {
+            if (is_file($f)) {
+                @unlink($f);
+            }
+        }
+    }
+}
+
 if (!getenv('DB_CONNECTION') && empty($_ENV['DB_CONNECTION']) && empty($_SERVER['DB_CONNECTION'])) {
     putenv("DB_CONNECTION=sqlite");
     $_ENV['DB_CONNECTION'] = 'sqlite';
