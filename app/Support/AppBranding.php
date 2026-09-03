@@ -29,7 +29,11 @@ class AppBranding
     public static function appName(): string
     {
         try {
-            return Setting::where('key', 'app_name')->value('value') ?: 'MyActivity';
+            $val = Setting::where('key', 'app_name')->value('value');
+            if (!$val || $val === 'Noohtify' || $val === 'Laravel') {
+                return 'MyActivity';
+            }
+            return (string) $val;
         } catch (\Throwable) {
             return 'MyActivity';
         }
@@ -47,7 +51,11 @@ class AppBranding
     public static function loginTitle(): string
     {
         try {
-            return Setting::where('key', 'login_title')->value('value') ?: self::appName();
+            $val = Setting::where('key', 'login_title')->value('value');
+            if (!$val || $val === 'Noohtify' || $val === 'HubTask' || $val === 'Laravel') {
+                return self::appName();
+            }
+            return (string) $val;
         } catch (\Throwable) {
             return self::appName();
         }
