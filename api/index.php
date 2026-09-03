@@ -62,6 +62,23 @@ if ($activeConnection === 'sqlite') {
     }
 }
 
+// Pass Authorization header from FastCGI / getallheaders to $_SERVER
+if (empty($_SERVER['HTTP_AUTHORIZATION'])) {
+    if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+    } elseif (!empty($_SERVER['HTTP_X_AUTHORIZATION'])) {
+        $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_X_AUTHORIZATION'];
+    } elseif (function_exists('getallheaders')) {
+        $allHeaders = getallheaders();
+        foreach ($allHeaders as $hdrKey => $hdrVal) {
+            if (strcasecmp($hdrKey, 'Authorization') === 0) {
+                $_SERVER['HTTP_AUTHORIZATION'] = $hdrVal;
+                break;
+            }
+        }
+    }
+}
+
 // Normalize SCRIPT_NAME and REQUEST_URI so Laravel routes /api/* and web routes correctly
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';

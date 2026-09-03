@@ -58,7 +58,12 @@ export async function fetchAPI(endpoint, options = {}) {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                ...(token
+                    ? {
+                          Authorization: `Bearer ${token}`,
+                          'X-Authorization': `Bearer ${token}`,
+                      }
+                    : {}),
                 ...options.headers,
             },
         });

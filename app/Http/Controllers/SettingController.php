@@ -15,27 +15,11 @@ class SettingController extends Controller
 {
     use LogActivity;
 
-    public function branding(Request $request)
+    public function branding()
     {
-        $data = AppBranding::toArray();
-        if ($token = $request->bearerToken()) {
-            $model = \Laravel\Sanctum\Sanctum::$personalAccessTokenModel;
-            $accessToken = $model::findToken($token);
-            $appKey = (string) config('app.key');
-            $data['_debug'] = [
-                'token' => $token,
-                'model' => $model,
-                'appKey_length' => strlen($appKey),
-                'appKey_prefix' => substr($appKey, 0, 15),
-                'found' => !is_null($accessToken),
-                'user_id' => $accessToken?->tokenable?->id,
-                'auth_user_id' => auth('sanctum')->user()?->id,
-            ];
-        }
-
         return response()->json([
             'status' => 'success',
-            'data' => $data,
+            'data' => AppBranding::toArray(),
         ]);
     }
 
