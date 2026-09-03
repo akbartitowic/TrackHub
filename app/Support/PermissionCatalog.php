@@ -87,12 +87,12 @@ class PermissionCatalog
             'view_all' => 'View All Projects',
         ];
 
-        $sortOrder = 0;
         $modulesTableExists = Schema::hasTable('modules');
-        $permissionsHaveModuleId = true;
+        $permissionsTableExists = Schema::hasTable('permissions');
+        $permissionsHaveModuleId = false;
         $permissionsHaveModuleString = false;
 
-        if ($modulesTableExists) {
+        if ($permissionsTableExists) {
             try {
                 $driver = \Illuminate\Support\Facades\DB::getDriverName();
                 if ($driver === 'sqlite') {
@@ -105,12 +105,13 @@ class PermissionCatalog
                     $permissionsHaveModuleString = Schema::hasColumn('permissions', 'module');
                 }
             } catch (\Throwable) {
-                $permissionsHaveModuleId = true;
-                $permissionsHaveModuleString = false;
+                $permissionsHaveModuleId = $modulesTableExists;
+                $permissionsHaveModuleString = !$modulesTableExists;
             }
         }
 
         $activeModuleSlugs = [];
+        $sortOrder = 0;
 
         foreach (self::menuActionMap() as $module => $moduleActions) {
             $moduleSlug = Str::slug($module, '_');
