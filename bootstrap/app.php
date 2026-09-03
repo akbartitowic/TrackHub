@@ -14,6 +14,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
 
+        $middleware->prepend(\App\Http\Middleware\NormalizeAuthorizationHeader::class);
+
         $middleware->alias([
             'permission'  => \App\Http\Middleware\CheckPermission::class,
             'token.lifetime' => \App\Http\Middleware\ValidateSanctumTokenLifetime::class,
