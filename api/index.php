@@ -84,14 +84,27 @@ $_SERVER['SCRIPT_NAME'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
 $_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__) . '/public/index.php';
 
-if (!empty($_SERVER['HTTP_X_MATCHED_PATH'])) {
-    $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_MATCHED_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-} elseif (!empty($_SERVER['HTTP_X_NOW_PATH'])) {
-    $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_NOW_PATH'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-} elseif (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/index.php')) {
-    $rest = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php'));
-    $_SERVER['REQUEST_URI'] = ($rest === '' || $rest === false) ? '/' : $rest;
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+if (!empty($_SERVER['HTTP_X_MATCHED_PATH']) && $_SERVER['HTTP_X_MATCHED_PATH'] !== '/api/index.php') {
+    $requestUri = $_SERVER['HTTP_X_MATCHED_PATH'];
+} elseif (!empty($_SERVER['HTTP_X_NOW_PATH']) && $_SERVER['HTTP_X_NOW_PATH'] !== '/api/index.php') {
+    $requestUri = $_SERVER['HTTP_X_NOW_PATH'];
 }
+
+if (str_starts_with($requestUri, '/api/index.php')) {
+    $rest = substr($requestUri, strlen('/api/index.php'));
+    $requestUri = ($rest === '' || $rest === false) ? '/' : $rest;
+}
+
+if (!str_starts_with($requestUri, '/')) {
+    $requestUri = '/' . $requestUri;
+}
+
+if (!empty($_SERVER['QUERY_STRING']) && !str_contains($requestUri, '?')) {
+    $requestUri .= '?' . $_SERVER['QUERY_STRING'];
+}
+
+$_SERVER['REQUEST_URI'] = $requestUri;
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
