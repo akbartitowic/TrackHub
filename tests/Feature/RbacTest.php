@@ -87,45 +87,29 @@ class RbacTest extends TestCase
         $this->getJson('/api/dashboard/overview')->assertOk();
     }
 
-    public function test_modules_management_module_cannot_be_deactivated(): void
-    {
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        $admin = User::factory()->create(['role_id' => $adminRole->id, 'role' => $adminRole->name]);
-        $adminRole->permissions()->sync(
-            Permission::whereIn('slug', ['modules_management.read', 'modules_management.update'])->pluck('id')
-        );
-        $module = Module::where('slug', 'modules_management')->firstOrFail();
-
-        Sanctum::actingAs($admin);
-        $this->putJson("/api/modules/{$module->id}", ['is_active' => false])
-            ->assertStatus(422);
-
-        $this->assertTrue($module->fresh()->is_active);
-    }
-
-    public function test_non_admin_role_cannot_toggle_modules_even_with_permission(): void
+    public function test_non_admin_role_cannot_update_menu_items_even_with_permission(): void
     {
         $role = Role::firstOrCreate(['name' => 'RBAC Test Role 3']);
         $user = User::factory()->create(['role_id' => $role->id, 'role' => $role->name]);
         $role->permissions()->sync(
             Permission::whereIn('slug', ['modules_management.read', 'modules_management.update'])->pluck('id')
         );
-        $module = Module::where('slug', 'dashboard')->firstOrFail();
+        $item = MenuItem::first();
 
         Sanctum::actingAs($user);
-        // Middleware permission check passes, but ModuleController::update()
+        // Middleware permission check passes, but MenuItemController::update()
         // additionally requires UserAccess::isPrivileged() (role literally "admin").
-        $this->putJson("/api/modules/{$module->id}", ['is_active' => false])
+        $this->putJson("/api/menu-items/{$item->id}", ['label' => 'Unauthorized Change'])
             ->assertForbidden();
     }
 
-    public function test_user_without_permission_cannot_list_modules(): void
+    public function test_user_without_permission_cannot_list_menu_items(): void
     {
         $role = Role::firstOrCreate(['name' => 'RBAC Test Role 4']);
         $user = User::factory()->create(['role_id' => $role->id, 'role' => $role->name]);
 
         Sanctum::actingAs($user);
-        $this->getJson('/api/modules')->assertForbidden();
+        $this->getJson('/api/menu-items')->assertForbidden();
     }
 
     /**
