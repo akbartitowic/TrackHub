@@ -22,8 +22,24 @@ function applyFavicon(url) {
     link.href = url;
 }
 
-export function AppBrandingProvider({ children }) {
-    const [branding, setBranding] = useState({
+function getInitialBranding() {
+    try {
+        const cached = localStorage.getItem('app_branding_cache');
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            return {
+                app_name: parsed.app_name || DEFAULT_APP_NAME,
+                app_tagline: parsed.app_tagline || DEFAULT_APP_TAGLINE,
+                login_title: parsed.login_title || DEFAULT_LOGIN_TITLE,
+                login_subtitle: parsed.login_subtitle || DEFAULT_LOGIN_SUBTITLE,
+                logo_url: parsed.logo_url || DEFAULT_LOGO,
+                favicon_url: parsed.favicon_url || DEFAULT_FAVICON,
+                has_custom_logo: Boolean(parsed.has_custom_logo),
+                has_custom_favicon: Boolean(parsed.has_custom_favicon),
+            };
+        }
+    } catch (_) {}
+    return {
         app_name: DEFAULT_APP_NAME,
         app_tagline: DEFAULT_APP_TAGLINE,
         login_title: DEFAULT_LOGIN_TITLE,
@@ -32,8 +48,23 @@ export function AppBrandingProvider({ children }) {
         favicon_url: DEFAULT_FAVICON,
         has_custom_logo: false,
         has_custom_favicon: false,
-    });
+    };
+}
+
+export function AppBrandingProvider({ children }) {
+    const [branding, setBrandingState] = useState(getInitialBranding);
     const [loading, setLoading] = useState(true);
+
+    const setBranding = useCallback((updater) => {
+        setBrandingState((prev) => {
+            const next = typeof updater === 'function' ? updater(prev) : updater;
+            try {
+                localStorage.setItem('app_branding_cache', JSON.stringify(next));
+            } catch (_) {}
+            applyFavicon(next.favicon_url);
+            return next;
+        });
+    }, []);
 
     const refreshBranding = useCallback(async () => {
         try {
@@ -53,14 +84,13 @@ export function AppBrandingProvider({ children }) {
                     has_custom_favicon: Boolean(data.data.has_custom_favicon),
                 };
                 setBranding(next);
-                applyFavicon(next.favicon_url);
                 return next;
             }
         } catch (err) {
             console.error('Failed to load branding', err);
         }
         return null;
-    }, []);
+    }, [setBranding]);
 
     useEffect(() => {
         let cancelled = false;
