@@ -42,24 +42,6 @@ Route::post('/signup', [AuthController::class, 'signup'])
 Route::get('/branding', [SettingController::class, 'branding']);
 Route::get('/announcements/active', [AnnouncementController::class, 'active']);
 
-Route::get('/debug-token', function (Request $request) {
-    $token = $request->bearerToken();
-    $model = \Laravel\Sanctum\Sanctum::$personalAccessTokenModel;
-    $accessToken = $model::findToken($token);
-    $appKey = config('app.key');
-    $parts = explode('.', explode('|', (string)$token, 2)[1] ?? '');
-    return response()->json([
-        'token' => $token,
-        'model' => $model,
-        'appKey_length' => strlen((string)$appKey),
-        'appKey_preview' => substr((string)$appKey, 0, 15),
-        'parts_count' => count($parts),
-        'accessToken_found' => !is_null($accessToken),
-        'user_found' => $accessToken ? ($accessToken->tokenable ? $accessToken->tokenable->id : 'no_tokenable') : 'no_token',
-        'auth_user' => auth('sanctum')->user() ? auth('sanctum')->user()->id : null,
-    ]);
-});
-
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
