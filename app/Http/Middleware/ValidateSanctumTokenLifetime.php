@@ -23,8 +23,11 @@ class ValidateSanctumTokenLifetime
             /** @var PersonalAccessToken $token */
             $token = $user->currentAccessToken();
             $created = $token->created_at;
+            $tz = config('app.timezone') ?: 'Asia/Jakarta';
+            $now = now()->timezone($tz);
+            $createdAt = $created ? $created->copy()->timezone($tz) : null;
 
-            if ($created && !$created->isSameDay(now())) {
+            if ($createdAt && !$createdAt->isSameDay($now)) {
                 $token->delete();
 
                 return response()->json([

@@ -36,25 +36,31 @@ if (file_exists($pkgFile) && !file_exists('/tmp/storage/bootstrap/cache/packages
     @copy($pkgFile, '/tmp/storage/bootstrap/cache/packages.php');
 }
 
-putenv("DB_CONNECTION=sqlite");
-$_ENV['DB_CONNECTION'] = 'sqlite';
-$_SERVER['DB_CONNECTION'] = 'sqlite';
+if (!getenv('DB_CONNECTION') && empty($_ENV['DB_CONNECTION']) && empty($_SERVER['DB_CONNECTION'])) {
+    putenv("DB_CONNECTION=sqlite");
+    $_ENV['DB_CONNECTION'] = 'sqlite';
+    $_SERVER['DB_CONNECTION'] = 'sqlite';
+}
 
-// Initialize SQLite database file in /tmp from bundled database if not exists
-$dbPath = '/tmp/database.sqlite';
-$sourceDb = dirname(__DIR__) . '/database/database.sqlite';
-if (file_exists($sourceDb) && filesize($sourceDb) > 0) {
-    if (!file_exists($dbPath) || filesize($dbPath) < filesize($sourceDb)) {
-        @copy($sourceDb, $dbPath);
+$activeConnection = getenv('DB_CONNECTION') ?: ($_ENV['DB_CONNECTION'] ?? ($_SERVER['DB_CONNECTION'] ?? 'sqlite'));
+if ($activeConnection === 'sqlite') {
+    // Initialize SQLite database file in /tmp from bundled database if not exists
+    $dbPath = '/tmp/database.sqlite';
+    $sourceDb = dirname(__DIR__) . '/database/database.sqlite';
+    if (!file_exists($dbPath)) {
+        if (file_exists($sourceDb) && filesize($sourceDb) > 0) {
+            @copy($sourceDb, $dbPath);
+        } else {
+            @touch($dbPath);
+        }
         @chmod($dbPath, 0666);
     }
-} elseif (!file_exists($dbPath)) {
-    @touch($dbPath);
-    @chmod($dbPath, 0666);
+    if (!getenv('DB_DATABASE') && empty($_ENV['DB_DATABASE']) && empty($_SERVER['DB_DATABASE'])) {
+        putenv("DB_DATABASE={$dbPath}");
+        $_ENV['DB_DATABASE'] = $dbPath;
+        $_SERVER['DB_DATABASE'] = $dbPath;
+    }
 }
-putenv("DB_DATABASE={$dbPath}");
-$_ENV['DB_DATABASE'] = $dbPath;
-$_SERVER['DB_DATABASE'] = $dbPath;
 
 // Normalize SCRIPT_NAME and REQUEST_URI so Laravel routes /api/* and web routes correctly
 $_SERVER['SCRIPT_NAME'] = '/index.php';
