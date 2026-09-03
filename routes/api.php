@@ -72,6 +72,24 @@ Route::get('/debug-diag', function (Request $request) {
     ]);
 });
 
+Route::get('/test-sanctum-only', function (Request $request) {
+    return response()->json([
+        'user' => $request->user(),
+        'auth_user' => auth('sanctum')->user(),
+    ]);
+})->middleware('auth:sanctum');
+
+Route::get('/test-manual-auth', function (Request $request) {
+    $token = $request->bearerToken();
+    $model = \Laravel\Sanctum\Sanctum::$personalAccessTokenModel;
+    $accessToken = $model::findToken($token);
+    $user = $accessToken?->tokenable;
+    return response()->json([
+        'manual_user' => $user ? $user->email : null,
+        'has_token' => !is_null($accessToken),
+    ]);
+});
+
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
