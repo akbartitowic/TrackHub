@@ -22,6 +22,11 @@ function applyFavicon(url) {
     link.href = url;
 }
 
+function applyTitle(name) {
+    if (typeof document === 'undefined') return;
+    document.title = name || DEFAULT_APP_NAME;
+}
+
 function getInitialBranding() {
     try {
         const cached = localStorage.getItem('app_branding_cache');
@@ -62,6 +67,7 @@ export function AppBrandingProvider({ children }) {
                 localStorage.setItem('app_branding_cache', JSON.stringify(next));
             } catch (_) {}
             applyFavicon(next.favicon_url);
+            applyTitle(next.app_name);
             return next;
         });
     }, []);
@@ -94,8 +100,14 @@ export function AppBrandingProvider({ children }) {
 
     useEffect(() => {
         let cancelled = false;
+        applyTitle(branding.app_name);
+        applyFavicon(branding.favicon_url);
         (async () => {
-            await refreshBranding();
+            const next = await refreshBranding();
+            if (next) {
+                applyTitle(next.app_name);
+                applyFavicon(next.favicon_url);
+            }
             if (!cancelled) setLoading(false);
         })();
         return () => {

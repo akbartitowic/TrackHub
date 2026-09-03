@@ -21,9 +21,22 @@ class AppBranding
         return self::pathFor(self::KEY_FAVICON);
     }
 
-    public static function logoUrl(): ?string
+    public static function logoUrl(): string
     {
-        return PublicStorageUrl::for(self::logoPath()) ?? '/logo.png';
+        $path = self::logoPath();
+        if (!$path) {
+            return '/logo.png';
+        }
+
+        if (str_starts_with($path, 'data:') || str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return PublicStorageUrl::for($path);
+        }
+
+        return '/logo.png';
     }
 
     public static function appName(): string
@@ -70,9 +83,46 @@ class AppBranding
         }
     }
 
-    public static function faviconUrl(): ?string
+    public static function faviconUrl(): string
     {
-        return PublicStorageUrl::for(self::faviconPath()) ?? '/favicon.png';
+        $path = self::faviconPath();
+        if (!$path) {
+            return '/favicon.png';
+        }
+
+        if (str_starts_with($path, 'data:') || str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return PublicStorageUrl::for($path);
+        }
+
+        return '/favicon.png';
+    }
+
+    public static function hasCustomLogo(): bool
+    {
+        $path = self::logoPath();
+        if (!$path) {
+            return false;
+        }
+        if (str_starts_with($path, 'data:')) {
+            return true;
+        }
+        return Storage::disk('public')->exists($path);
+    }
+
+    public static function hasCustomFavicon(): bool
+    {
+        $path = self::faviconPath();
+        if (!$path) {
+            return false;
+        }
+        if (str_starts_with($path, 'data:')) {
+            return true;
+        }
+        return Storage::disk('public')->exists($path);
     }
 
     /** Absolute filesystem path for PDF / DomPDF when a custom logo exists. */
@@ -97,8 +147,8 @@ class AppBranding
             'login_subtitle' => self::loginSubtitle(),
             'logo_url' => self::logoUrl(),
             'favicon_url' => self::faviconUrl(),
-            'has_custom_logo' => self::logoPath() !== null,
-            'has_custom_favicon' => self::faviconPath() !== null,
+            'has_custom_logo' => self::hasCustomLogo(),
+            'has_custom_favicon' => self::hasCustomFavicon(),
         ];
     }
 
