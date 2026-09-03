@@ -55,11 +55,7 @@ export default function Profile() {
     };
 
     return (
-        <div className="relative min-h-full overflow-hidden bg-slate-50 transition-colors duration-200 dark:bg-[#000040]">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 dark:from-[#000040] dark:via-[#0a0e2e] dark:to-background-dark" />
-            <div className="pointer-events-none absolute -top-24 -left-24 size-[28rem] rounded-full bg-accent/10 blur-[120px] dark:bg-accent/15" />
-            <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
-
+        <div className="relative min-h-full overflow-hidden bg-slate-50 transition-colors duration-200 dark:bg-[#0B192C]">
             <div className="relative z-10 w-full space-y-8 px-4 py-5 sm:px-6 lg:px-8 pb-16">
             <header className="flex items-center justify-between">
                 <div>
@@ -114,7 +110,7 @@ export default function Profile() {
                     <Card className="shadow-sm border-slate-200 dark:border-slate-800">
                         <CardHeader>
                             <CardTitle className="text-lg">Account Information</CardTitle>
-                            <CardDescription>Basic details associated with your Noohtify account.</CardDescription>
+                            <CardDescription>Basic details associated with your MyActivity account.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

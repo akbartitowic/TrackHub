@@ -271,10 +271,7 @@ export default function ProjectBoardDashboard() {
     const usagePct = stats?.perc ?? project.usage_percentage;
 
     return (
-        <div className="relative flex-1 w-full overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-[#000040]">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 dark:from-[#000040] dark:via-[#0a0e2e] dark:to-background-dark" />
-            <div className="pointer-events-none absolute -top-24 -left-24 size-[28rem] rounded-full bg-accent/10 blur-[120px] dark:bg-accent/15" />
-            <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
+        <div className="relative flex-1 w-full overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-[#0B192C]">
             <div className="relative w-full px-4 py-5 sm:px-6 sm:py-8 lg:px-8 space-y-8">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div className="flex gap-4 min-w-0">
@@ -305,7 +302,7 @@ export default function ProjectBoardDashboard() {
                                             ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
                                             : displayStatus === 'In Progress'
                                               ? 'bg-blue-50 text-blue-600 border-blue-200'
-                                              : 'bg-orange-50 text-orange-600 border-orange-200'
+                                              : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-300'
                                     }
                                 >
                                     {displayStatus}

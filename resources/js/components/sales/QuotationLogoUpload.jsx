@@ -111,7 +111,7 @@ export default function QuotationLogoUpload({
       <div>
         <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Logo quotation</p>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Unggah logo untuk header PDF (mis. logo Noohtify pada contoh Sunpride). Tanpa upload, dipakai logo default aplikasi.
+          Unggah logo untuk header PDF (mis. logo MyActivity pada contoh Sunpride). Tanpa upload, dipakai logo default aplikasi.
         </p>
       </div>
       <div className="flex flex-col sm:flex-row gap-4 items-start">

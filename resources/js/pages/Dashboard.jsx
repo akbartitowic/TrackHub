@@ -94,12 +94,7 @@ export default function Dashboard() {
     const criticalProjects = efficiencyData.filter((p) => p.burn_percentage > 85);
 
     return (
-        <div className="relative min-h-full overflow-hidden bg-slate-50 dark:bg-[#000040]">
-            {/* Decorative gradient + soft blurred accents — mirrors the login page's visual language, tuned down for a data-dense dashboard */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 dark:from-[#000040] dark:via-[#0a0e2e] dark:to-background-dark" />
-            <div className="pointer-events-none absolute -top-24 -left-24 size-[28rem] rounded-full bg-accent/10 blur-[120px] dark:bg-accent/15" />
-            <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
-
+        <div className="relative min-h-full overflow-hidden bg-slate-50 dark:bg-[#0B192C]">
             <div className="relative w-full space-y-6 px-4 py-5 sm:px-6 lg:px-8 pb-16">
                 <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -118,7 +113,7 @@ export default function Dashboard() {
                                 <LayoutGrid className="size-4" />
                                 Project Board
                             </Button>
-                            <Button size="sm" className="!rounded-xl gap-1.5 bg-accent font-bold text-white shadow-lg shadow-accent/20 hover:bg-orange-600" onClick={() => navigate('/reports')}>
+                            <Button size="sm" className="!rounded-xl gap-1.5 bg-[#00529C] font-bold text-white shadow-lg shadow-blue-900/20 hover:bg-[#00417C]" onClick={() => navigate('/reports')}>
                                 Reports
                                 <ArrowRight className="size-3.5" />
                             </Button>
@@ -130,8 +125,9 @@ export default function Dashboard() {
                     {shouldShowMemberDashboard ? (
                         <>
                             <KpiCard
-                                label="Projects Handled"
-                                value={memberStats.totalProjectsHandled}
+                                label="Involved Projects"
+                                value={memberStats.involvedProjects}
+                                hint="Projects you are a member of"
                                 icon={Rocket}
                                 iconClass="bg-primary/10 text-primary"
                             />
@@ -139,7 +135,7 @@ export default function Dashboard() {
                                 label="Active Tasks"
                                 value={memberStats.activeTasks}
                                 icon={Users}
-                                iconClass="bg-orange-500/10 text-orange-600"
+                                iconClass="bg-sky-500/10 text-sky-600"
                             />
                             <KpiCard
                                 label="Completed Tasks"

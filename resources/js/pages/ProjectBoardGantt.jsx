@@ -243,10 +243,7 @@ export default function ProjectBoardGantt() {
     if (!project) return null;
 
     return (
-        <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden bg-slate-50 dark:bg-[#000040]">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 dark:from-[#000040] dark:via-[#0a0e2e] dark:to-background-dark" />
-            <div className="pointer-events-none absolute -top-24 -left-24 size-[28rem] rounded-full bg-accent/10 blur-[120px] dark:bg-accent/15" />
-            <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
+        <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden bg-slate-50 dark:bg-[#0B192C]">
             <div className="relative shrink-0 border-b border-white/60 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-[#151b28]/90 px-5 py-4">
                 <Button
                     variant="ghost"

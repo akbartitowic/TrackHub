@@ -118,13 +118,13 @@ export default function PublicReview() {
 
     /* ── Layout wrapper ── */
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+        <div className="min-h-screen bg-slate-50 flex flex-col">
             {/* Top bar */}
             <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-2">
                 <div className="size-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
                     <Star className="size-4 text-white fill-white" />
                 </div>
-                <span className="text-sm font-bold text-slate-800">HubTask</span>
+                <span className="text-sm font-bold text-slate-800">MyActivity</span>
                 <span className="text-slate-300 mx-1">·</span>
                 <span className="text-sm text-slate-500">Form Review</span>
             </header>
@@ -343,7 +343,7 @@ export default function PublicReview() {
             </main>
 
             <footer className="py-4 text-center text-[11px] text-slate-400">
-                Powered by HubTask
+                Powered by MyActivity
             </footer>
         </div>
     );

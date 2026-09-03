@@ -40,20 +40,15 @@ export default function ForceChangePassword() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#000040] font-sans p-4">
-            <div className="absolute top-[-15%] left-[10%] size-[32rem] bg-slate-400/25 rounded-full blur-[120px]" />
-            <div className="absolute top-[10%] right-[-10%] size-96 bg-primary/40 rounded-full blur-[110px]" />
-            <div className="absolute bottom-[-20%] left-[-10%] size-[28rem] bg-[#232a38]/80 rounded-full blur-[110px]" />
-
+        <div className="min-h-screen flex items-center justify-center bg-[#0B192C] font-sans p-4">
             <div className="relative z-10 w-full max-w-md">
                 <div className="flex items-center justify-center gap-2.5 mb-6">
-                    <div className="size-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
-                        <AppLogo alt="Application logo" className="size-6" />
+                    <div className="h-12 px-4 bg-white rounded-xl flex items-center justify-center border border-white/20 shadow-md">
+                        <AppLogo alt="MyActivity logo" className="h-7 w-auto object-contain" />
                     </div>
-                    <span className="text-xl font-black text-white tracking-tight">HubTask</span>
                 </div>
 
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
+                <div className="rounded-3xl border border-[#1E3A5F] bg-[#112239] p-6 shadow-2xl sm:p-8">
                     <div className="text-center mb-6">
                         <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-amber-500/15 text-amber-400">
                             <ShieldAlert className="size-6" />
@@ -76,11 +71,11 @@ export default function ForceChangePassword() {
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-300 uppercase tracking-wider ml-1">Current Password</label>
                             <div className="relative group">
-                                <Lock className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-accent" />
+                                <Lock className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#3FA9F5]" />
                                 <PasswordInput
                                     required
                                     placeholder="••••••••"
-                                    className="h-13 rounded-2xl border-white/10 bg-white/5 pl-12 text-white placeholder:text-slate-400 transition-all focus:border-accent focus:ring-accent"
+                                    className="h-13 rounded-2xl border-[#1E3A5F] bg-[#0B192C] pl-12 text-white placeholder:text-slate-500 transition-all focus:border-[#3FA9F5] focus:ring-[#3FA9F5]"
                                     toggleButtonClassName="text-slate-400 hover:bg-white/10 hover:text-white dark:hover:bg-white/10"
                                     value={data.current_password}
                                     onChange={e => setData({ ...data, current_password: e.target.value })}
@@ -91,12 +86,12 @@ export default function ForceChangePassword() {
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-300 uppercase tracking-wider ml-1">New Password</label>
                             <div className="relative group">
-                                <KeyRound className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-accent" />
+                                <KeyRound className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#3FA9F5]" />
                                 <PasswordInput
                                     required
                                     minLength={8}
                                     placeholder="Minimum 8 characters"
-                                    className="h-13 rounded-2xl border-white/10 bg-white/5 pl-12 text-white placeholder:text-slate-400 transition-all focus:border-accent focus:ring-accent"
+                                    className="h-13 rounded-2xl border-[#1E3A5F] bg-[#0B192C] pl-12 text-white placeholder:text-slate-500 transition-all focus:border-[#3FA9F5] focus:ring-[#3FA9F5]"
                                     toggleButtonClassName="text-slate-400 hover:bg-white/10 hover:text-white dark:hover:bg-white/10"
                                     value={data.password}
                                     onChange={e => setData({ ...data, password: e.target.value })}
@@ -107,12 +102,12 @@ export default function ForceChangePassword() {
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-300 uppercase tracking-wider ml-1">Confirm New Password</label>
                             <div className="relative group">
-                                <KeyRound className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-accent" />
+                                <KeyRound className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#3FA9F5]" />
                                 <PasswordInput
                                     required
                                     minLength={8}
                                     placeholder="Repeat the new password"
-                                    className="h-13 rounded-2xl border-white/10 bg-white/5 pl-12 text-white placeholder:text-slate-400 transition-all focus:border-accent focus:ring-accent"
+                                    className="h-13 rounded-2xl border-[#1E3A5F] bg-[#0B192C] pl-12 text-white placeholder:text-slate-500 transition-all focus:border-[#3FA9F5] focus:ring-[#3FA9F5]"
                                     toggleButtonClassName="text-slate-400 hover:bg-white/10 hover:text-white dark:hover:bg-white/10"
                                     value={data.password_confirmation}
                                     onChange={e => setData({ ...data, password_confirmation: e.target.value })}
@@ -127,7 +122,7 @@ export default function ForceChangePassword() {
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full h-13 bg-accent hover:bg-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-[0.98] mt-2"
+                            className="w-full h-13 bg-[#00529C] hover:bg-[#00417C] text-white font-bold rounded-2xl shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.01] active:scale-[0.99] mt-2"
                         >
                             {isLoading ? 'Saving...' : 'Change Password'}
                         </Button>

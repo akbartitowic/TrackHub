@@ -73,9 +73,9 @@ export default function SystemSettings() {
         refreshBranding,
     } = useAppBranding();
 
-    const [appName, setAppName] = useState(initialAppName || 'Noohtify');
+    const [appName, setAppName] = useState(initialAppName || 'MyActivity');
     const [appTagline, setAppTagline] = useState(initialAppTagline || 'Software Management');
-    const [loginTitle, setLoginTitle] = useState(initialLoginTitle || 'HubTask');
+    const [loginTitle, setLoginTitle] = useState(initialLoginTitle || 'MyActivity');
     const [loginSubtitle, setLoginSubtitle] = useState(initialLoginSubtitle || 'Task management connected to your world.');
     const [isSavingBrandingText, setIsSavingBrandingText] = useState(false);
 
@@ -312,7 +312,7 @@ export default function SystemSettings() {
                                         type="text"
                                         value={appName}
                                         onChange={(e) => setAppName(e.target.value)}
-                                        placeholder="Contoh: Noohtify"
+                                        placeholder="Contoh: MyActivity"
                                         required
                                         className="bg-white dark:bg-slate-950"
                                     />
@@ -343,7 +343,7 @@ export default function SystemSettings() {
                                         type="text"
                                         value={loginTitle}
                                         onChange={(e) => setLoginTitle(e.target.value)}
-                                        placeholder="Contoh: HubTask"
+                                        placeholder="Contoh: MyActivity"
                                         className="bg-white dark:bg-slate-950"
                                     />
                                     <p className="text-[11px] text-slate-500 dark:text-slate-400">

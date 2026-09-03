@@ -15,7 +15,7 @@
                     <td style="background-color:#ffffff; padding:22px 28px; border-bottom:1px solid #edeef5;">
                         <table role="presentation" cellpadding="0" cellspacing="0">
                             <tr>
-                                <td style="font-size:17px; font-weight:700; color:#000040; letter-spacing:0.2px;">
+                                <td style="font-size:17px; font-weight:700; color:#00529C; letter-spacing:0.2px;">
                                     <span style="color:#0f9c8f;">&#9679;</span>&nbsp; {{ $appName ?? 'HubTask' }}
                                 </td>
                             </tr>

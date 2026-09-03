@@ -35,7 +35,7 @@ const navLinkClass = (isActive, variant = 'primary', collapsed = false) => cn(
     variant === 'sub' ? 'px-6 py-2' : 'px-3 py-2.5',
     collapsed && 'lg:justify-center lg:px-2',
     isActive
-        ? 'bg-accent/15 text-accent font-medium dark:bg-accent/20'
+        ? 'bg-[#00529C]/10 text-[#00529C] font-semibold dark:bg-[#3FA9F5]/20 dark:text-[#3FA9F5]'
         : variant === 'sub'
             ? 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5'
             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5',
@@ -101,7 +101,7 @@ export default function Sidebar({ mobileOpen = false }) {
             className={cn(
                 'fixed inset-y-0 left-0 z-50 flex h-screen w-64 max-w-[min(18rem,88vw)] flex-col overflow-visible',
                 'border-r border-slate-200 bg-white transition-[transform,width] duration-200 ease-out',
-                'dark:border-white/10 dark:bg-[#000040]',
+                'dark:border-white/10 dark:bg-[#0B192C]',
                 mobileOpen ? 'translate-x-0' : '-translate-x-full',
                 'lg:relative lg:inset-auto lg:z-20 lg:max-w-none lg:shrink-0 lg:translate-x-0',
                 collapsed ? 'lg:w-20' : 'lg:w-64',
@@ -119,12 +119,12 @@ export default function Sidebar({ mobileOpen = false }) {
 
             <div className="flex h-full min-h-0 w-full flex-col overflow-y-auto overflow-x-hidden">
             <div className={cn('flex items-center gap-3 p-6', collapsed && 'lg:justify-center lg:px-3')}>
-                <div className="size-11 shrink-0 rounded-xl flex items-center justify-center p-1.5 bg-slate-50 dark:bg-[#151b28] shadow-sm border border-slate-100 dark:border-white/10">
-                    <AppLogo alt="Application logo" className="size-full" />
+                <div className="size-11 shrink-0 rounded-xl flex items-center justify-center p-1 bg-white shadow-sm border border-slate-200/80 dark:border-white/10">
+                    <AppLogo alt="MyActivity logo" className="size-full object-contain" />
                 </div>
                 <div className={cn('min-w-0', collapsedLabelClass(collapsed))}>
                     <h1 className="font-extrabold text-xl leading-tight tracking-tight text-primary dark:text-white truncate">
-                        {app_name || 'Noohtify'}
+                        {app_name || 'MyActivity'}
                     </h1>
                     <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider truncate">
                         {app_tagline || 'Software Management'}
@@ -162,7 +162,7 @@ export default function Sidebar({ mobileOpen = false }) {
                         collapsed && 'lg:justify-center',
                     )}
                 >
-                    <div className="size-9 shrink-0 rounded-lg overflow-hidden bg-accent/15 flex items-center justify-center text-accent font-black text-sm dark:bg-accent/20">
+                    <div className="size-9 shrink-0 rounded-lg overflow-hidden bg-[#00529C]/10 flex items-center justify-center text-[#00529C] font-black text-sm dark:bg-[#3FA9F5]/20 dark:text-[#3FA9F5]">
                         {user?.avatar_url ? (
                             <img src={user.avatar_url} alt={user?.name || 'Avatar'} className="size-full object-cover" />
                         ) : (

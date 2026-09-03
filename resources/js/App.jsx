@@ -32,8 +32,8 @@ import { getDefaultLandingPath, getRequiredPermissionForPath, hasPermission } fr
 
 function AuthLoadingSpinner() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#000040]">
-      <div className="size-12 border-4 border-accent/20 border-t-accent rounded-full animate-spin"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[#0B192C]">
+      <div className="size-12 border-4 border-[#3FA9F5]/20 border-t-[#3FA9F5] rounded-full animate-spin"></div>
     </div>
   );
 }

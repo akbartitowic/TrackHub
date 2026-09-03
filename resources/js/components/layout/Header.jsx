@@ -33,7 +33,7 @@ export default function Header({ title = "Executive Overview", onMenuClick }) {
     };
 
     return (
-        <header className="sticky top-0 z-30 bg-background-light/80 dark:bg-[#000040]/85 backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8 sm:py-4 flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 transition-colors duration-200">
+        <header className="sticky top-0 z-30 bg-background-light/80 dark:bg-[#0B192C]/85 backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8 sm:py-4 flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 transition-colors duration-200">
             <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
                 <Button
                     type="button"

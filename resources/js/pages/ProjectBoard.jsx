@@ -107,7 +107,7 @@ function DraggableTaskCard({ task, onClick, assigneeName, isFreelance, formatHou
 
     const prioColors = {
         High: 'bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400',
-        Medium: 'bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400',
+        Medium: 'bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400',
         Low: 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
     };
     const pClass = prioColors[task.priority] || prioColors.Low;
@@ -313,7 +313,7 @@ function DraggableTaskCard({ task, onClick, assigneeName, isFreelance, formatHou
 function TaskDragOverlayCard({ task, assigneeName }) {
     const prioColors = {
         High: 'bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400',
-        Medium: 'bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400',
+        Medium: 'bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400',
         Low: 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
     };
     const pClass = prioColors[task.priority] || prioColors.Low;
@@ -1576,15 +1576,12 @@ export default function ProjectBoard() {
         cn(
             status === 'Done' && 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300',
             status === 'In Progress' && 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-300',
-            status !== 'Done' && status !== 'In Progress' && 'border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-300',
+            status !== 'Done' && status !== 'In Progress' && 'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300',
         );
 
     if (!selectedProject) {
         return (
-            <div className="relative min-h-full overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-[#000040]">
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 dark:from-[#000040] dark:via-[#0a0e2e] dark:to-background-dark" />
-                <div className="pointer-events-none absolute -top-24 -left-24 size-[28rem] rounded-full bg-accent/10 blur-[120px] dark:bg-accent/15" />
-                <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
+            <div className="relative min-h-full overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-[#0B192C]">
                 <div className="relative w-full space-y-5 px-4 py-5 sm:px-6 lg:px-8 pb-16">
                     <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                         <div>
@@ -2123,7 +2120,7 @@ export default function ProjectBoard() {
                     <div
                         className={cn(
                             'h-full rounded-full transition-all',
-                            realP > 90 ? 'bg-rose-500' : realP > 70 ? 'bg-orange-500' : 'bg-primary',
+                            realP > 90 ? 'bg-rose-500' : realP > 70 ? 'bg-amber-500' : 'bg-primary',
                         )}
                         style={{ width: `${p}%` }}
                     />
@@ -2136,12 +2133,7 @@ export default function ProjectBoard() {
     };
 
     return (
-        <div className="relative min-h-full overflow-hidden bg-slate-50 transition-colors duration-200 dark:bg-[#000040]">
-            {/* Decorative gradient + soft blurred accents — mirrors the login page / dashboard visual language */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-slate-50 dark:from-[#000040] dark:via-[#0a0e2e] dark:to-background-dark" />
-            <div className="pointer-events-none absolute -top-24 -left-24 size-[28rem] rounded-full bg-accent/10 blur-[120px] dark:bg-accent/15" />
-            <div className="pointer-events-none absolute -bottom-32 -right-24 size-[32rem] rounded-full bg-primary/10 blur-[130px] dark:bg-accent/10" />
-
+        <div className="relative min-h-full overflow-hidden bg-slate-50 transition-colors duration-200 dark:bg-[#0B192C]">
             <div className="relative z-10 flex flex-col">
             {/* Project Header & Stats */}
             <div className="border-b border-white/60 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-[#151b28]/90">
@@ -2161,7 +2153,7 @@ export default function ProjectBoard() {
                                     className={cn(
                                         displayProjectStatus === 'Done' && 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30',
                                         displayProjectStatus === 'In Progress' && 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30',
-                                        displayProjectStatus !== 'Done' && displayProjectStatus !== 'In Progress' && 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/30',
+                                        displayProjectStatus !== 'Done' && displayProjectStatus !== 'In Progress' && 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-300',
                                     )}
                                 >
                                     {displayProjectStatus}
@@ -2756,7 +2748,7 @@ export default function ProjectBoard() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider ${task.priority === 'High' ? 'bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400' :
-                                                task.priority === 'Medium' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400' :
+                                                task.priority === 'Medium' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' :
                                                     'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
                                                 }`}>{task.priority}</span>
                                         </td>
@@ -3632,7 +3624,7 @@ export default function ProjectBoard() {
                         </form>
                     ) : (
                         <div className="py-4 space-y-4">
-                            <div className={`p-4 rounded-xl border flex items-start gap-3 ${importResult.errors.length === 0 ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800' : 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800'}`}>
+                            <div className={`p-4 rounded-xl border flex items-start gap-3 ${importResult.errors.length === 0 ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800' : 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800'}`}>
                                 {importResult.errors.length === 0 ? <Plus className="size-5 shrink-0" /> : <AlertCircle className="size-5 shrink-0" />}
                                 <div>
                                     <p className="font-bold">{importResult.message}</p>

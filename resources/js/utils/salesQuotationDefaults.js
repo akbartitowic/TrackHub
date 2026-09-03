@@ -1,5 +1,5 @@
 export const QUOTATION_DEFAULT_DETAIL =
-  "Based on the agile nature of the client's needs for this project, where requirements and demands are still highly dynamic, we propose a retainer package based on a man-hour quota. This quota can be utilized for various needs within the application project, with requests aligned to the capabilities that Noohtify can provide. The services we offer under this man-hour quota include:\n- Design\n- Mobile development\n- Backend development";
+  "Based on the agile nature of the client's needs for this project, where requirements and demands are still highly dynamic, we propose a retainer package based on a man-hour quota. This quota can be utilized for various needs within the application project, with requests aligned to the capabilities that MyActivity can provide. The services we offer under this man-hour quota include:\n- Design\n- Mobile development\n- Backend development";
 
 export const QUOTATION_DEFAULT_NOTES =
   'Additional expenses that come from 3rd parties (if any), are not included in this quotation such as infrastructure cost, 3rd party subscription, etc.\nProduction will be started after Purchase Order Received.';

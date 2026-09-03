@@ -216,7 +216,7 @@ export default function TeamUsers() {
                                 <Settings className="size-4" />
                                 <span>Roles & Permissions</span>
                             </Button>
-                            <Button className="gap-2 h-10 px-5 shadow-lg shadow-blue-500/25 bg-gradient-to-r from-primary to-blue-500 hover:from-blue-600 hover:to-primary transition-all transform hover:-translate-y-0.5" onClick={() => setIsModalOpen(true)}>
+                            <Button className="gap-2 h-10 px-5 shadow-lg shadow-blue-900/20 bg-[#00529C] hover:bg-[#00417C] text-white transition-all" onClick={() => setIsModalOpen(true)}>
                                 <UserPlus className="size-5" />
                                 <span>Add New User</span>
                             </Button>
@@ -369,7 +369,7 @@ export default function TeamUsers() {
                             <DialogClose asChild>
                                 <Button type="button" variant="ghost">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-primary to-blue-500 hover:from-blue-600 hover:to-primary shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">
+                            <Button type="submit" disabled={isSubmitting} className="bg-[#00529C] hover:bg-[#00417C] text-white shadow-lg shadow-blue-900/20 transition-all">
                                 {isSubmitting ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
                                 Save User
                             </Button>
@@ -476,7 +476,7 @@ export default function TeamUsers() {
                                 <DialogClose asChild>
                                     <Button type="button" variant="ghost">Cancel</Button>
                                 </DialogClose>
-                                <Button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-primary to-blue-500 hover:from-blue-600 hover:to-primary shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">
+                                <Button type="submit" disabled={isSubmitting} className="bg-[#00529C] hover:bg-[#00417C] text-white shadow-lg shadow-blue-900/20 transition-all">
                                     {isSubmitting ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
                                     Update User
                                 </Button>

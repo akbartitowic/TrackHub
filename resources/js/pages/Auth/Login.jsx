@@ -159,96 +159,6 @@ function AnnouncementModal({ items, onCloseAll }) {
     );
 }
 
-// Resting position (relative 0..1) blobs settle into before/without any mouse input —
-// placed near the bottom-left brand text so the liquid "pools" there by default.
-const LIQUID_REST = { x: 0.32, y: 0.74 };
-
-// Each blob chases the cursor at its own ease speed/offset so they trail one another
-// like fluid with inertia, instead of moving as one rigid group.
-const LIQUID_BLOBS = [
-    { size: 520, ease: 0.055, offset: { x: 0, y: 0 }, color: '#EE5D2B', opacity: 0.5 },
-    { size: 440, ease: 0.032, offset: { x: 70, y: -50 }, color: '#fff7ec', opacity: 0.45 },
-    { size: 600, ease: 0.02, offset: { x: -80, y: 60 }, color: '#1e2a52', opacity: 0.4 },
-];
-
-function LiquidBackdrop({ containerRef }) {
-    const blobElsRef = useRef([]);
-    const posRef = useRef(LIQUID_BLOBS.map(() => ({ ...LIQUID_REST })));
-    const targetRef = useRef({ ...LIQUID_REST });
-
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return undefined;
-
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        const handleMove = (e) => {
-            targetRef.current = {
-                x: e.clientX / window.innerWidth,
-                y: e.clientY / window.innerHeight,
-            };
-        };
-        const handleLeave = () => {
-            targetRef.current = { ...LIQUID_REST };
-        };
-        window.addEventListener('mousemove', handleMove);
-        window.addEventListener('mouseleave', handleLeave);
-
-        let rafId;
-        let frame = 0;
-        const tick = () => {
-            frame += 1;
-            const rect = container.getBoundingClientRect();
-
-            LIQUID_BLOBS.forEach((cfg, i) => {
-                const pos = posRef.current[i];
-                // Subtle idle drift keeps the liquid gently alive even at rest.
-                const idleX = reduceMotion ? 0 : Math.sin(frame / 260 + i * 2) * 0.015;
-                const idleY = reduceMotion ? 0 : Math.cos(frame / 220 + i * 2) * 0.015;
-                const tx = targetRef.current.x + idleX;
-                const ty = targetRef.current.y + idleY;
-                pos.x += (tx - pos.x) * cfg.ease;
-                pos.y += (ty - pos.y) * cfg.ease;
-
-                const el = blobElsRef.current[i];
-                if (el) {
-                    const px = pos.x * rect.width + cfg.offset.x;
-                    const py = pos.y * rect.height + cfg.offset.y;
-                    el.style.transform = `translate3d(${px}px, ${py}px, 0) translate(-50%, -50%)`;
-                }
-            });
-
-            rafId = requestAnimationFrame(tick);
-        };
-        rafId = requestAnimationFrame(tick);
-
-        return () => {
-            window.removeEventListener('mousemove', handleMove);
-            window.removeEventListener('mouseleave', handleLeave);
-            cancelAnimationFrame(rafId);
-        };
-    }, [containerRef]);
-
-    return (
-        <div className="absolute inset-0 pointer-events-none" style={{ filter: 'blur(30px)' }}>
-            {LIQUID_BLOBS.map((cfg, i) => (
-                <div
-                    key={i}
-                    ref={(el) => { blobElsRef.current[i] = el; }}
-                    className="absolute top-0 left-0 rounded-full"
-                    style={{
-                        width: cfg.size,
-                        height: cfg.size,
-                        opacity: cfg.opacity,
-                        mixBlendMode: 'soft-light',
-                        background: `radial-gradient(circle at center, ${cfg.color} 0%, ${cfg.color} 35%, transparent 72%)`,
-                    }}
-                />
-            ))}
-        </div>
-    );
-}
-
 export default function Login() {
     const { login } = useAuth();
     const { app_name, login_title, login_subtitle } = useAppBranding();
@@ -261,7 +171,6 @@ export default function Login() {
     const [rememberMe, setRememberMe] = useState(true);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const leftPanelRef = useRef(null);
     const { visible: announcements, dismiss: dismissAnnouncement } = useAnnouncements();
 
     const handleSubmit = async (e) => {
@@ -284,45 +193,47 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex bg-[#000040] font-sans">
+        <div className="min-h-screen flex bg-[#0B192C] font-sans">
             <AnnouncementModal items={announcements} onCloseAll={() => dismissAnnouncement(announcements.map((a) => a.id))} />
 
             {/* Left panel — brand, hidden on small screens */}
-            <div ref={leftPanelRef} className="hidden md:flex relative w-1/2 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#f4e9da] via-[#dcc3ac] to-[#4b5568]" />
-                <LiquidBackdrop containerRef={leftPanelRef} />
-
-                <div className="relative z-10 flex flex-col justify-end h-full px-12 pb-14 lg:px-16 lg:pb-20">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="size-12 bg-white/15 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
-                            <AppLogo alt="Application logo" className="size-8" />
+            <div className="hidden md:flex relative w-1/2 overflow-hidden bg-[#00529C]">
+                <div className="relative z-10 flex flex-col justify-between h-full p-12 lg:p-16">
+                    <div className="flex items-center gap-3">
+                        <div className="h-12 px-3.5 bg-white rounded-2xl flex items-center justify-center border border-white/20 shadow-md">
+                            <AppLogo alt="MyActivity logo" className="h-8 w-auto object-contain" />
                         </div>
-                        <span className="text-4xl font-black text-white tracking-wide">{login_title || app_name || 'MyActivity'}</span>
                     </div>
-                    <p className="text-white/75 font-medium text-base max-w-[18rem] leading-relaxed tracking-wide">
-                        {login_subtitle || 'Task management connected to your world.'}
-                    </p>
+
+                    <div className="space-y-4 max-w-md">
+                        <div className="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-semibold tracking-wider uppercase text-white">
+                            Activity Management
+                        </div>
+                        <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
+                            {login_title || 'MyActivity'}
+                        </h1>
+                        <p className="text-sky-100/90 font-normal text-base lg:text-lg leading-relaxed">
+                            {login_subtitle || 'Task management connected to your world.'}
+                        </p>
+                    </div>
+
+                    <div className="text-xs text-sky-200/70 font-medium">
+                        &copy; {new Date().getFullYear()} MyActivity. All rights reserved.
+                    </div>
                 </div>
             </div>
 
             {/* Right panel — sign-in card */}
-            <div className="relative flex-1 flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-[#3d4759]" />
-                <div className="absolute top-[-15%] left-[10%] size-[32rem] bg-slate-400/25 rounded-full blur-[120px]" />
-                <div className="absolute top-[10%] right-[-10%] size-96 bg-primary/40 rounded-full blur-[110px]" />
-                <div className="absolute bottom-[-20%] left-[-10%] size-[28rem] bg-[#232a38]/80 rounded-full blur-[110px]" />
-                <div className="absolute bottom-[-15%] right-[5%] size-96 bg-accent/10 rounded-full blur-[120px]" />
-
-                <div className="relative z-10 w-full max-w-md p-4 sm:p-8 flex flex-col items-center">
+            <div className="relative flex-1 flex items-center justify-center bg-[#0B192C] p-4 sm:p-8">
+                <div className="relative z-10 w-full max-w-md flex flex-col items-center">
                     {/* Compact brand mark for small screens where the left panel is hidden */}
                     <div className="flex md:hidden items-center justify-center gap-2.5 mb-6 w-full">
-                        <div className="size-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
-                            <AppLogo alt="Application logo" className="size-6" />
+                        <div className="h-11 px-4 bg-white rounded-xl flex items-center justify-center border border-white/10 shadow-sm">
+                            <AppLogo alt="MyActivity logo" className="h-7 w-auto object-contain" />
                         </div>
-                        <span className="text-xl font-black text-white tracking-tight">{login_title || app_name || 'MyActivity'}</span>
                     </div>
 
-                    <div className="w-full rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
+                    <div className="w-full rounded-3xl border border-[#1E3A5F] bg-[#112239] p-6 shadow-2xl sm:p-8">
                         <div className="text-center mb-8">
                             <h2 className="text-2xl font-black text-white tracking-tight">Welcome back</h2>
                             <p className="text-slate-400 font-medium mt-1 text-sm">Sign in to continue</p>
@@ -339,12 +250,12 @@ export default function Login() {
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-slate-300 uppercase tracking-wider ml-1">Email</label>
                                 <div className="relative group">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-slate-500 group-focus-within:text-accent transition-colors" />
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-slate-400 group-focus-within:text-[#3FA9F5] transition-colors" />
                                     <Input
                                         type="email"
                                         required
                                         placeholder="you@company.com"
-                                        className="pl-12 h-13 bg-white/5 border-white/10 text-white placeholder:text-slate-400 rounded-2xl focus:ring-accent focus:border-accent transition-all"
+                                        className="pl-12 h-13 bg-[#0B192C] border-[#1E3A5F] text-white placeholder:text-slate-500 rounded-2xl focus:ring-[#3FA9F5] focus:border-[#3FA9F5] transition-all"
                                         value={credentials.email}
                                         onChange={e => setCredentials({ ...credentials, email: e.target.value })}
                                     />
@@ -354,11 +265,11 @@ export default function Login() {
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-slate-300 uppercase tracking-wider ml-1">Password</label>
                                 <div className="relative group">
-                                    <Lock className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-accent" />
+                                    <Lock className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#3FA9F5]" />
                                     <PasswordInput
                                         required
                                         placeholder="••••••••"
-                                        className="h-13 rounded-2xl border-white/10 bg-white/5 pl-12 text-white placeholder:text-slate-400 transition-all focus:border-accent focus:ring-accent"
+                                        className="h-13 rounded-2xl border-[#1E3A5F] bg-[#0B192C] pl-12 text-white placeholder:text-slate-500 transition-all focus:border-[#3FA9F5] focus:ring-[#3FA9F5]"
                                         toggleButtonClassName="text-slate-400 hover:bg-white/10 hover:text-white dark:hover:bg-white/10"
                                         value={credentials.password}
                                         onChange={e => setCredentials({ ...credentials, password: e.target.value })}
@@ -377,7 +288,7 @@ export default function Login() {
                             <Button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full h-13 bg-accent hover:bg-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-[0.98] mt-2"
+                                className="w-full h-13 bg-[#00529C] hover:bg-[#00417C] text-white font-bold rounded-2xl shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.01] active:scale-[0.99] mt-2"
                             >
                                 {isLoading ? (
                                     <RefreshCcw className="size-5 animate-spin mr-2" />
