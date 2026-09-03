@@ -4,9 +4,13 @@ use App\Support\AppBranding;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome', AppBranding::toArray());
+    return response()
+        ->view('welcome', AppBranding::toArray())
+        ->header('Clear-Site-Data', '"cookies"');
 })->name('login');
 
 Route::get('/{any}', function () {
-    return view('welcome', AppBranding::toArray());
+    return response()
+        ->view('welcome', AppBranding::toArray())
+        ->header('Clear-Site-Data', '"cookies"');
 })->where('any', '^(?!api).*$');

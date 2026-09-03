@@ -25,7 +25,6 @@ export function AuthProvider({ children }) {
             }
         } catch (err) {
             console.error("Failed to fetch user", err);
-            localStorage.removeItem('auth_token');
         } finally {
             setLoading(false);
         }

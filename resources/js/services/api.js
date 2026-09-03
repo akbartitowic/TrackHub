@@ -54,6 +54,7 @@ export async function fetchAPI(endpoint, options = {}) {
     try {
         const response = await fetch(url, {
             ...options,
+            credentials: 'omit',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
